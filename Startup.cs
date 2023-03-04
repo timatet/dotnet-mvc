@@ -1,3 +1,4 @@
+using System.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Http;
 
 namespace dotnet_mvc
 {
@@ -41,6 +44,15 @@ namespace dotnet_mvc
             }
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            
+            /* Организация доступа к `node_modules` по адресу `/vendor` из `_Layout.cshtml` */
+            app.UseStaticFiles(new StaticFileOptions{
+                FileProvider = new PhysicalFileProvider(Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "node_modules"
+                )),
+                RequestPath = new PathString("/vendor")
+            });
 
             app.UseRouting();
 

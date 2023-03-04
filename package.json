@@ -1,0 +1,26 @@
+{
+  "name": "dotnet-mvc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/timatet/dotnet-mvc.git"
+  },
+  "author": "Timofey T.",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/timatet/dotnet-mvc/issues"
+  },
+  "homepage": "https://github.com/timatet/dotnet-mvc#readme",
+  "dependencies": {
+    "bootstrap": "^5.2.3",
+    "jquery": "^3.6.3",
+    "jquery-validation": "^1.19.5",
+    "jquery-validation-unobtrusive": "^4.0.0",
+    "toastr": "^2.1.4"
+  }
+}
