@@ -1,5 +1,5 @@
 bin/
 node_modules/
-obj/*
+obj/
 Debug/
 Properties/
