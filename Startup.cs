@@ -11,6 +11,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Http;
+using dotnet_mvc.Models.DataModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_mvc
 {
@@ -27,11 +29,28 @@ namespace dotnet_mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddDbContext<ApplicationDbContext>(
+                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ApplicationDbContext dbContext)
         {
+            dbContext.Database.Migrate();
+
+            if (!dbContext.Users.ToList().Exists(user => user.NickName == "admin")) {
+                dbContext.Users.Add(
+                    new User() {
+                        NickName = "admin",
+                        FullName = "Administratior",
+                        IsAdmin = true
+                    }
+                );
+
+                dbContext.SaveChanges();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
