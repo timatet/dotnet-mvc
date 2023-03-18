@@ -28,7 +28,7 @@ namespace dotnet_mvc.Controllers
 
             SqlConnection sqlConnection = new SqlConnection(connection_string);
             sqlConnection.Open();
-            SqlCommand testSqlCommand = new SqlCommand("SELECT COUNT(*) FROM mvc_table", sqlConnection);
+            SqlCommand testSqlCommand = new SqlCommand("SELECT COUNT(*) FROM Logs", sqlConnection);
             int count = (int) testSqlCommand.ExecuteScalar();
 
             ViewData["TotalData"] = count;
