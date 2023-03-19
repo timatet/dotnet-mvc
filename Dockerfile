@@ -9,7 +9,7 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0-buster-slim AS build
 WORKDIR /src
 COPY . .
 RUN dotnet restore
-RUN dotnet publish -o /publish/
+RUN dotnet publish -o /publish/ --no-restore
 
 COPY node_modules/ /publish/node_modules/
 
