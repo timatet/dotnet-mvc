@@ -69,3 +69,48 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+/* Стили страницы аккаунта
+-------------------------------------------------- */
+
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Стиль заголовка */
+.authform-header {
+  width: 100%;
+  text-align: center;
+}
+
+.inner-addon {
+  position: relative;
+}
+
+.inner-addon .left-icon .right-icon {
+  position: absolute;
+}
+
+.left-addon .left-icon  { 
+  left:  0px;
+}
+.right-addon .right-icon { 
+  right: 0px;
+}
+
+.left-icon {
+  right: auto;
+}
+.right-icon {
+  left: auto;
+}
+
+.left-addon input  { 
+  padding-left:  35px; 
+}
+.right-addon input { 
+  padding-right: 35px; 
+}

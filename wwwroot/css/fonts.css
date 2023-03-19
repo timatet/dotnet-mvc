@@ -1,0 +1,84 @@
+  /*
+    Шрифты приложения
+    Inter
+  */
+  @font-face {
+    font-family: Inter-Black;
+    src: url('../fonts/Inter-Black.ttf');
+  }
+
+  .Inter-Black {
+    font-family: 'Inter-Black';
+  }
+
+  @font-face {
+    font-family: Inter-Bold;
+    src: url('../fonts/Inter-Bold.ttf');
+  }
+
+  .Inter-Bold {
+    font-family: 'Inter-Black';
+  }
+
+  @font-face {
+    font-family: Inter-ExtraBold;
+    src: url('../fonts/Inter-ExtraBold.ttf');
+  }
+
+  .Inter-ExtraBold {
+    font-family: 'Inter-ExtraBold';
+  }
+
+  @font-face {
+    font-family: Inter-ExtraLight;
+    src: url('../fonts/Inter-ExtraLight.ttf');
+  }
+
+  .Inter-ExtraLight {
+    font-family: 'Inter-ExtraLight';
+  }
+
+  @font-face {
+    font-family: Inter-Light;
+    src: url('../fonts/Inter-Light.ttf');
+  }
+
+  .Inter-Light {
+    font-family: 'Inter-Light';
+  }
+
+  @font-face {
+    font-family: Inter-Medium;
+    src: url('../fonts/Inter-Medium.ttf');
+  }
+
+  .Inter-Medium {
+    font-family: 'Inter-Medium';
+  }
+  
+  @font-face {
+    font-family: Inter-Regular;
+    src: url('../fonts/Inter-Regular.ttf');
+  }
+
+  .Inter-Regular {
+    font-family: 'Inter-Regular';
+  }
+
+  @font-face {
+    font-family: Inter-SemiBold;
+    src: url('../fonts/Inter-SemiBold.ttf');
+  }
+
+  .Inter-SemiBold {
+    font-family: 'Inter-SemiBold';
+  }
+
+  @font-face {
+    font-family: Inter-Thin;
+    src: url('../fonts/Inter-Thin.ttf');
+  }
+
+  .Inter-Thin {
+    font-family: 'Inter-Thin';
+  }

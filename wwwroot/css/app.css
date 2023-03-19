@@ -1,0 +1,337 @@
+@import url('./variables.css');  
+@import url('./fonts.css');
+
+ /* Disabled svg button */
+.disabled-click {
+  pointer-events: none;
+}
+
+.disabled-primary {
+  fill: #A28DF6;
+}
+
+/* Контур */
+.contour {
+  border: 0.2vh;
+  border-style: solid;
+  border-color: black;
+}
+
+/* Отступы между объектами */
+.padding-8080 {
+  padding: 8px 0px 8px 0px;
+}
+
+.padding-6666 {
+  padding: 6px 6px 6px 6px;
+}
+
+.padding-7777 {
+  padding: 7px 7px 7px 7px;
+}
+
+.padding-8888 {
+  padding: 8px 8px 8px 8px;
+}
+
+/* Стиль анимации ошибки */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.page-bg {
+  background-color: rgba(59, 232, 255);
+  background-image: url('../img/footer-bg.png'), url('../img/bees.png'), url('../img/bg_0.jpg');
+  background-position-y: bottom, center, center;
+  background-repeat: no-repeat, repeat, repeat;
+  background-size: 101% auto, 50% auto, 100% auto;
+  clear: both; 
+}
+
+/* Параметры страницы */
+html { 
+  /* overflow-x: hidden; 
+  overflow-y: hidden;  */
+  min-height:100vh;
+}
+
+/* Погрешности при настройке основных блоков управления */
+.row {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  height: auto;
+  background:#fff;
+
+  font-family: 'Inter-Regular';
+
+  overflow: auto;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+
+}
+
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+p {
+  text-indent: 20px; /* Отступ первой строки в пикселах */
+}
+
+/* Контейнер таблицы на странице */
+.page-container {
+  min-height: 90vh;
+
+  background: #FFF;
+
+  border: 0vh;
+  border-style: solid;
+  border-color: #e6e6e6;
+  border-radius: 1vh;
+
+  background-color: #fff;
+
+  overflow-y: auto; /* прокрутка по вертикали */
+
+  box-shadow: 0 1vh 3vh rgba(0, 0, 0, 0.175) !important;
+  
+  margin-top: 8vh;
+  margin-bottom: 2vh;
+
+  padding: 1vh;
+
+  /* background-color: rgba(255, 191, 0, 0.8);
+  border-color: rgba(255, 191, 0); */
+  background-color: rgba(255, 255, 255, 0.8);
+  border-color: rgb(207, 207, 207);
+}
+
+/* Контейнер футера страницы */
+.page-footer {
+  left: 0; 
+  right: 0; 
+  bottom: 0; 
+  
+  opacity: .8;
+}
+
+.menu-fixed {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.navbar-size {
+  height: 6vh;
+  font-size: 2vh;
+
+  padding: 0px;
+}
+
+.navbar-link-size {
+  padding: 0vh;
+  margin: 0vh;
+}
+
+.left-page-container {
+  margin-left: 2vh;
+  margin-right: 1vh;
+  max-width: 5vh;
+}
+
+.right-page-container {
+  margin-right: 2vh;
+  margin-left: 1vh;
+}
+
+/* Контейнер для содержимого внутри страницы */
+.block-container {
+  background: #FFF;
+
+  border: 1px;
+  border-style: solid;
+  border-color: #e6e6e6;
+
+  min-height: 0px;
+
+  padding: 10px; 
+  margin: 10px;
+}
+
+.row-block-container {
+  margin-left: 10px; 
+  margin-right: 10px;
+}
+
+/* Контейнер новости */
+.out-card {
+  padding: 0;
+}
+
+.in-card {
+  margin: 2px;
+  border: 0.1vh solid #D8DDEA;
+  border-radius: 8px;
+}
+
+
+/* Управление контентом */
+
+.content-body {
+  padding: 0px 20px 15px 20px;
+}
+
+.content-body.padding-top {
+  padding-top: 20px;
+}
+
+.content-header {
+  margin: 0 20px;
+  border-bottom: 1px solid rgba(220, 224, 237, 0.5);
+}
+
+.content-toolbar {
+  margin: 15px 0px 10px 0px;
+}
+
+/* Выравнивания */
+
+.flex-space-between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.flex-left {
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;    
+
+  width: 100%;
+}
+
+.flex-right {
+  display: flex;
+  flex-direction: row;
+  justify-content: right;
+  align-items: center;
+  
+  width: 100%;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Специальные параметры для кнопки "Показать" внутри строк таблиц */
+.showSmButton { 
+  --bs-btn-padding-y: 2px; 
+  --bs-btn-padding-x: 8px; 
+  --bs-btn-font-size: 12px;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+      -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+
+.wordBreak {
+  overflow-wrap: break-word;  /* не поддерживает IE, Firefox; является копией word-wrap */ 
+  word-wrap: break-word;
+  word-break: break-all;  /* не поддерживает Opera12.14, значение keep-all не поддерживается IE, Chrome */ 
+  line-break: auto;  /* нет поддержки для русского языка */ 
+  hyphens: manual;  /* значение auto не поддерживается Chrome */ 
+  width: 50%;
+}
+
+/* Quick interface color change */
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+  border: 0px solid transparent !important;
+}
+
+.btn-primary {
+  background-color: var(--main-color) !important;
+}
+
+.btn-primary:hover {
+  background-color: var(--main-color-hover) !important;
+}
+
+.btn-primary:active, .btn-primary:visited {
+  background-color: var(--main-color-hover) !important;
+}
+
+.btn-outline-primary {
+  border-color: var(--main-color) !important;
+  color: var(--main-color-hover) !important;
+}
+
+.btn-outline-primary:hover {
+  border-color: var(--main-color-hover) !important;
+  background-color: var(--main-color-hover) !important;
+  color: #FFF !important;
+}
+
+.text-primary {
+  fill: var(--main-color);
+  color: var(--main-color-hover);
+}
+
+.text-primary:hover {
+  fill: var(--main-color-hover);
+}
+
+.text-success {
+  fill: var(--success-color);
+  color: var(--success-color-hover);
+}
+
+.text-success:hover {
+  fill: var(--success-color-hover);
+}
+
+.text-success:active {
+  fill: var(--success-color-active);
+}
+
+/* Отступы между объектами */
+.padding-8080 {
+  padding: 8px 0px 8px 0px;
+}
+
+.padding-6666 {
+  padding: 6px 6px 6px 6px;
+}
+
+.padding-7777 {
+  padding: 7px 7px 7px 7px;
+}
+
+.padding-8888 {
+  padding: 8px 8px 8px 8px;
+}
+
+/* Настройка запрета прокрутки карты */
+iframe {
+  overflow: hidden;
+}

@@ -20,6 +20,7 @@ namespace dotnet_mvc.Controllers
         {
             _logger = logger;
             _configuration = configuration;
+            
         } 
 
         public IActionResult Index()

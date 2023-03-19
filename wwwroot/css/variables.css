@@ -1,0 +1,38 @@
+/* Переменные */
+:root {
+    --main-color: #7749F8;
+    --main-color-hover: #5227CC;
+
+    --status-color: #17A2B8;
+    --status-color-hover: #117A8A;
+
+    --success-color: #19A74E;
+    --success-color-hover: #16883F;
+    --success-color-active: #147E3B;
+
+    --secondary-color: #6B757D;
+
+    --danger-color: #DC3545;
+  }
+
+  /* Colors */
+
+  .main-color {
+    fill: var(--main-color);
+    color: var(--main-color);
+  }
+
+  .success-color {
+    fill: var(--success-color);
+    color: var(--success-color);
+  }
+
+  .secondary-color {
+    fill: var(--secondary-color);
+    color: var(--secondary-color);
+  }
+
+  .danger-color {
+    fill: var(--danger-color);
+    color: var(--danger-color);
+  }
