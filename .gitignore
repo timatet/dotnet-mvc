@@ -3,3 +3,4 @@ node_modules/
 obj/
 Debug/
 Properties/
+.vs/
