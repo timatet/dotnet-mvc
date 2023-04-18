@@ -1,0 +1,129 @@
+@{
+    ViewData["Title"] = "Создание нового товара";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <div class="block-container">
+        <form class="needs-validation row g-3" novalidate> 
+            <div class="col-12">
+                <label for="productName" class="form-label">Название товара</label>
+                <input type="text" class="form-control" id="productName" placeholder="Ботинки альпинистские Zamberlan" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите название товара.
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="productDescription" class="form-label">Описание товара</label>
+                <textarea minlength="30" class="form-control" id="productDescription" rows="3" placeholder="Описание товара" required></textarea>
+                <div class="invalid-feedback">
+                    Пожалуйста, введите описание товара (от 30 символов).
+                </div>
+            </div>
+
+            <!--<div class="col-md-2">
+                <label for="productParameter" class="form-label">Характеристика</label>
+                <select id="productParameter" class="form-select">
+                <option selected>Вес</option>
+                <option>Материал</option>
+                </select>
+            </div>-->
+            <div class="col-5">
+                <label for="productParameter" class="form-label">Характеристика</label>
+                <input type="text" class="form-control" id="productParameter" placeholder="Вес">
+            </div>
+            <div class="col-5">
+                <label for="productParameterName" class="form-label">Значение</label>
+                <input type="text" class="form-control" id="productParameterName" placeholder="0,975 кг">
+            </div>
+            <div class="col-2">
+                <label for="productParameterAddButton" class="form-label">Добавить</label>
+                <a class="btn btn-outline-primary form-control" id="productParameterAddButton">
+                    <i class="bi bi-basket"></i>
+                    Добавить
+                </a>
+            </div>
+            <div class="col-12">
+                <label for="productParameterList" class="form-label">Добавленные характеристики</label>
+                <select class="form-select" size="3" aria-label="Добавленные характеристики" id="productParameterList">
+                    <option value="0">Open this select menu</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+            <!-- TODO: Должен быть список добавляемых параметров. Передавать именно его -->
+
+            <div class="col-4">
+                <label for="productBrand" class="form-label">Бренд товара</label>
+                <input type="text" class="form-control" id="productBrand" placeholder="Zamberlan" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, кажите производителя товара.
+                </div>
+            </div>
+            <div class="col-4">
+                <label for="productCost" class="form-label">Стоимость</label>
+                <input type="number" min="1" max="50000" class="form-control" id="productCost" placeholder="5700" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите стоимость товара (1 - 50000).
+                </div>
+            </div>
+            <div class="col-4">
+                <label for="productCountInStock" class="form-label">Количество на складе</label>
+                <input type="number" min="0" class="form-control" id="productCountInStock" placeholder="51" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите количество товара на складе.
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="productBrandDescription" class="form-label">Информация о бренде товара</label>
+                <textarea class="form-control" id="productBrandDescription" rows="3" placeholder="Описание бренда"></textarea>
+            </div>
+
+            <div class="col-12">
+                <label for="productImage" class="form-label">Изображение товара</label>
+                <input class="form-control" type="file" id="productImage" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, выберите изображение товара.
+                </div>
+            </div>
+
+            <div class="col-12 flex-right">
+                <button type="submit" class="btn btn-primary">Создать товар</button>
+            </div>
+        </form>
+    </div>  
+</div>
+
+<script>
+    /* Скрипт проверки валидации формы */
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        var invalidOptions = document.querySelectorAll(".form-control:invalid");
+                        invalidOptions.forEach(function(element) {
+                            element.parentNode.childNodes.forEach(function(node) {
+                                if (node.className == 'valid-feedback') {
+                                    node.className = 'invalid-feedback';
+                                }
+                            });
+                        });
+                        $('html, body').animate({
+                            scrollTop: $(invalidOptions[0]).offset().top
+                        }, 2000);
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+</script>

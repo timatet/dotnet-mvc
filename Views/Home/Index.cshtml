@@ -5,16 +5,16 @@
 <div class="text-center">
     <div class="block-container flex-space-between">
         <div class="flex-left">
-            <button type="button" class="btn btn-outline-primary">
+            <a asp-controller="Product" asp-action="New" class="btn btn-outline-primary">
                 <i class="bi bi-folder-plus"></i>
                 Добавить товар
-            </button>
+            </a>
         </div>
         <div class="flex-right">
-            <button type="button" class="btn btn-outline-primary">
+            <a asp-controller="Account" asp-action="Basket" class="btn btn-outline-primary">
                 <i class="bi bi-basket"></i>
                 Корзина
-            </button>
+            </a>
         </div>
     </div>
 
@@ -30,8 +30,8 @@
                         </span>
                     </p>
                     <div class="flex-space-between">
-                        <a asp-controller="Home" asp-action="InfoProduct" asp-route-id="12" class="btn btn-primary">Открыть</a>
-                        <a asp-controller="Home" asp-action="InfoProduct" asp-route-id="12" class="btn btn-primary">В корзину</a>
+                        <a asp-controller="Product" asp-action="Info" asp-route-id="12" class="btn btn-primary">Открыть</a>
+                        <a asp-controller="Product" asp-action="Info" asp-route-id="12" class="btn btn-primary">В корзину</a>
                     </div>
                 </div>
             </div>
