@@ -39,6 +39,10 @@ namespace dotnet_mvc.Controllers
             return View();
         }
 
+        public IActionResult InfoProduct(int? id) {
+            return View(id);
+        }
+
         public IActionResult Privacy()
         {
             return View();

@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Product page";
+}
+
+<div class="text-center">
+    <!--<div class="block-container flex-space-between">
+        <div class="flex-left">
+            <button type="button" class="btn btn-outline-primary">
+                <i class="bi bi-folder-plus"></i>
+                Добавить товар
+            </button>
+        </div>
+        <div class="flex-right">
+            <button type="button" class="btn btn-outline-primary">
+                <i class="bi bi-basket"></i>
+                Корзина
+            </button>
+        </div>
+    </div>-->
+
+    <div class="block-container row">
+        <div class="flex-left">
+            <h2 class="Inter-SemiBold">Ботинки мужские Lomer Everest Stx Red/Black @Html.DisplayFor(model => model)</h2>
+        </div>
+        <div class="row flex-space-between">
+            <div class="col rect-img-container flex-left">
+                <img src="~/images/tovar_example.jpg" class="rect-img" alt="...">
+            </div>
+            <div class="col" style="position: relative;">
+                <h3 align="left">Описание:</h3>
+                <p align="left" style="margin-left: 10px;">
+                    Технические ботинки, наделённые обязательным для успешного восхождения функционалом.
+                    Верх из толстого нубука и кожи, удобная система шнуровки, широкий защитный рант и уверенная подошва.
+                    Область голеностопа надёжно зафиксирована, но не лишена максимальной свободы движения.
+                    Воздухопроницаемая влагостойкая мембрана встаёт надёжной защитой от погодных явлений.
+                </p>
+                <h3 align="left">Характеристики:</h3>
+                <ul style="text-align: left;">
+                    <li class="flex-space-between">
+                        <hr/>
+                        <div style="width: 50%;" class="flex-left">
+                            <strong>Вес (кг):</strong>
+                        </div>
+                        <div class="flex-left">
+                            0,99
+                        </div>
+                    </li>
+                    <li class="flex-space-between">
+                        <div style="width: 50%" class="flex-left">
+                            <strong>Материал:</strong>
+                        </div>
+                        <div class="flex-left">
+                            Кожа
+                        </div>
+                    </li>
+                </ul>
+
+                <div class="flex-center">
+                    <a class="btn btn-primary btn-lg btn-block" style="text-align: center; width: 80%; position: absolute; bottom: 5%;">В корзину</a>
+                </div>
+            </div>
+        </div>
+        
+    </div> 
+   
+</div>
