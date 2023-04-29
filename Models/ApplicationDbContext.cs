@@ -14,8 +14,10 @@ namespace dotnet_mvc.Models.DataModels
     public class ApplicationDbContext : DbContext
     {
 
-        public DbSet<User> Users { get; set; }
-        public DbSet<Log> Logs { get; set; }
+        public DbSet<UserModel> Users { get; set; }
+        public DbSet<LogModel> Logs { get; set; }
+        public DbSet<ProductModel> Products { get; set; }
+        public DbSet<BrandModel> Brands { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

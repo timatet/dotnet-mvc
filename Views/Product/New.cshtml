@@ -1,3 +1,5 @@
+@model dotnet_mvc.Models.DataModels.ProductModel
+
 @{
     ViewData["Title"] = "Создание нового товара";
 }
@@ -6,18 +8,30 @@
 
 <div>
     <div class="block-container">
-        <form class="needs-validation row g-3" novalidate> 
+        <form asp-action="New" enctype="multipart/form-data" method="post" class="needs-validation row g-3" novalidate> 
             <div class="col-12">
                 <label for="productName" class="form-label">Название товара</label>
-                <input type="text" class="form-control" id="productName" placeholder="Ботинки альпинистские Zamberlan" required>
+                <input asp-for="Name" type="text" class="form-control" id="productName" placeholder="Ботинки альпинистские Zamberlan" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите название товара.
                 </div>
             </div>
+            
+            <div class="col-12">
+                <label for="productCategory" class="form-label">Выбор категории товара</label>
+                <select 
+                    asp-for="Category"
+                    class="form-select" asp-items="Html.GetEnumSelectList<dotnet_mvc.Models.Auxiliary.CategoryEnum>()" 
+                    aria-label="Выбор категории товара" id="productCategory">
+                </select>
+            </div>
 
             <div class="col-12">
                 <label for="productDescription" class="form-label">Описание товара</label>
-                <textarea minlength="30" class="form-control" id="productDescription" rows="3" placeholder="Описание товара" required></textarea>
+                <textarea 
+                    asp-for="Description" minlength="30" class="form-control" 
+                    id="productDescription" rows="3" placeholder="Описание товара" required>
+                </textarea>
                 <div class="invalid-feedback">
                     Пожалуйста, введите описание товара (от 30 символов).
                 </div>
@@ -56,23 +70,37 @@
             </div>
             <!-- TODO: Должен быть список добавляемых параметров. Передавать именно его -->
 
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="SwitchBrandFields(this)" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Включите, чтобы выбрать бренд среди существующих</label>
+                </div>
+            </div>
+            <div class="col-12" id="productBrandListGroup" hidden>
+                <label for="productBrandList" class="form-label">Доступные бренды</label>
+                <select 
+                    asp-for="BrandId"
+                    class="form-select" asp-items="ViewBag.BrandList" 
+                    aria-label="Доступные бренды" id="productBrandList" required>
+                </select>
+            </div>
             <div class="col-4">
                 <label for="productBrand" class="form-label">Бренд товара</label>
-                <input type="text" class="form-control" id="productBrand" placeholder="Zamberlan" required>
+                <input asp-for="Brand.Name" type="text" class="form-control" id="productBrand" placeholder="Zamberlan" required>
                 <div class="invalid-feedback">
                     Пожалуйста, кажите производителя товара.
                 </div>
             </div>
             <div class="col-4">
                 <label for="productCost" class="form-label">Стоимость</label>
-                <input type="number" min="1" max="50000" class="form-control" id="productCost" placeholder="5700" required>
+                <input asp-for="Cost" type="number" min="1" max="50000" class="form-control" id="productCost" placeholder="5700" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите стоимость товара (1 - 50000).
                 </div>
             </div>
             <div class="col-4">
                 <label for="productCountInStock" class="form-label">Количество на складе</label>
-                <input type="number" min="0" class="form-control" id="productCountInStock" placeholder="51" required>
+                <input asp-for="CountInStack" type="number" min="0" class="form-control" id="productCountInStock" placeholder="51" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите количество товара на складе.
                 </div>
@@ -80,12 +108,12 @@
 
             <div class="col-12">
                 <label for="productBrandDescription" class="form-label">Информация о бренде товара</label>
-                <textarea class="form-control" id="productBrandDescription" rows="3" placeholder="Описание бренда"></textarea>
+                <textarea asp-for="Brand.Description" class="form-control" id="productBrandDescription" rows="3" placeholder="Описание бренда"></textarea>
             </div>
 
             <div class="col-12">
                 <label for="productImage" class="form-label">Изображение товара</label>
-                <input class="form-control" type="file" id="productImage" required>
+                <input class="form-control" name="upload" type="file" id="productImage" required>
                 <div class="invalid-feedback">
                     Пожалуйста, выберите изображение товара.
                 </div>
@@ -126,4 +154,18 @@
             });
         }, false);
     })();
+
+    function SwitchBrandFields(checkboxInput) {
+        // Скрываем элементы ввода нового бренда
+        var productBrand = document.getElementById("productBrand");
+        productBrand.disabled = checkboxInput.checked ? true : false;
+        productBrand.required = checkboxInput.checked ? false : true;
+        var productBrandDescription = document.getElementById("productBrandDescription");
+        productBrandDescription.disabled = checkboxInput.checked ? true : false;
+        // Показываем существующие
+        var productBrandListGroup = document.getElementById("productBrandListGroup");
+        productBrandListGroup.hidden = checkboxInput.checked ? false : true;
+        var productBrandList = document.getElementById("productBrandList");
+        productBrandList.required = checkboxInput.checked ? true : false;
+    } 
 </script>

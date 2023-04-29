@@ -41,7 +41,7 @@ namespace dotnet_mvc
 
             if (!dbContext.Users.ToList().Exists(user => user.NickName == "admin")) {
                 dbContext.Users.Add(
-                    new User() {
+                    new UserModel() {
                         NickName = "admin",
                         FullName = "Administratior",
                         IsAdmin = true

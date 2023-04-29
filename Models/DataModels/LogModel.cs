@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace dotnet_mvc.Models.DataModels
 {
-    public class Log
+    public class LogModel
     {
       public DateTime _timeStamp;
 

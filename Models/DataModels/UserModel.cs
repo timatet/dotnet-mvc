@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace dotnet_mvc.Models.DataModels
 {
-    public class User
+    public class UserModel
     {
         public int Id { get; set; }
 
