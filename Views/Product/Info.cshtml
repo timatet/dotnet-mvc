@@ -1,4 +1,6 @@
-﻿@{
+﻿@model dotnet_mvc.Models.DataModels.ProductModel
+
+@{
     ViewData["Title"] = "Product page";
 }
 
@@ -20,23 +22,23 @@
 
     <div class="block-container row">
         <div class="flex-left">
-            <h2 class="Inter-SemiBold">Ботинки мужские Lomer Everest Stx Red/Black @Html.DisplayFor(model => model)</h2>
+            <h2 class="Inter-SemiBold">@Html.DisplayFor(model => model.Name)</h2>
         </div>
         <div class="row flex-space-between">
             <div class="col rect-img-container flex-left">
-                <img src="~/images/tovar_example.jpg" class="rect-img" alt="...">
+                <img src="@Url.Content("~/images/")@Html.DisplayFor(model => model.ImageUrl)" class="rect-img" alt="...">
             </div>
             <div class="col" style="position: relative;">
                 <h3 align="left">Описание:</h3>
                 <p align="left" style="margin-left: 10px;">
-                    Технические ботинки, наделённые обязательным для успешного восхождения функционалом.
-                    Верх из толстого нубука и кожи, удобная система шнуровки, широкий защитный рант и уверенная подошва.
-                    Область голеностопа надёжно зафиксирована, но не лишена максимальной свободы движения.
-                    Воздухопроницаемая влагостойкая мембрана встаёт надёжной защитой от погодных явлений.
+                    @Html.DisplayFor(model => model.Description)
                 </p>
                 <h3 align="left">Характеристики:</h3>
                 <ul style="text-align: left;">
-                    <li class="flex-space-between">
+                    <div class="alert alert-secondary" role="alert">
+                        Настройка характеристик товара будет произведена позже.
+                    </div>
+                    <!--<li class="flex-space-between">
                         <hr/>
                         <div style="width: 50%;" class="flex-left">
                             <strong>Вес (кг):</strong>
@@ -52,7 +54,7 @@
                         <div class="flex-left">
                             Кожа
                         </div>
-                    </li>
+                    </li>-->
                 </ul>
 
                 <div class="flex-center">

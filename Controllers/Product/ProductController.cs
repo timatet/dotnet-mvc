@@ -32,7 +32,16 @@ namespace dotnet_mvc.Controllers.Product
         }
 
         public IActionResult Info(int? id) {
-            return View(id);
+            if (id == null) {
+                return NotFound();
+            }
+              
+            var product = db.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null) {
+                return NotFound();
+            }
+               
+            return View(product);
         }
 
         public IActionResult New() {

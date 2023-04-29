@@ -36,7 +36,6 @@ namespace dotnet_mvc.Models.DataModels
 
         public int Size { get; set; }
 
-        [HiddenInput(DisplayValue = false)]
         public string ImageUrl { get; set; }
 
     }
