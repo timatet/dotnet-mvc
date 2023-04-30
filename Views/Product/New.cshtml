@@ -37,13 +37,6 @@
                 </div>
             </div>
 
-            <!--<div class="col-md-2">
-                <label for="productParameter" class="form-label">Характеристика</label>
-                <select id="productParameter" class="form-select">
-                <option selected>Вес</option>
-                <option>Материал</option>
-                </select>
-            </div>-->
             <div class="col-5">
                 <label for="productCharacteristic" class="form-label">Характеристика</label>
                 <select 
@@ -66,8 +59,9 @@
             <div class="col-12">
                 <label for="productCharacteristicList" class="form-label">Добавленные характеристики</label>
                 <select 
-                    class="form-select" size="5" 
-                    aria-label="Добавленные характеристики" id="productCharacteristicList">
+                    class="form-select" size="5" name="productCharacteristicList" multiple
+                    aria-label="Добавленные характеристики" id="productCharacteristicList"
+                    onmousedown="(function(e){ e.preventDefault(); })(event, this)">
                 </select>
             </div>
 
@@ -82,7 +76,7 @@
                 <select 
                     asp-for="BrandId"
                     class="form-select" asp-items="ViewBag.BrandList" 
-                    aria-label="Доступные бренды" id="productBrandList" required>
+                    aria-label="Доступные бренды" id="productBrandList">
                 </select>
             </div>
             <div class="col-4">
@@ -214,7 +208,7 @@
         var selectedText = selectedOption.text + " (" + selectedValue + ")";
 
         var listSelecteds = document.getElementById("productCharacteristicList");
-        listSelecteds.appendChild(new Option(selectedText, selectedValue));
+        listSelecteds.appendChild(new Option(selectedText, selectedOption.value + "&" + selectedValue, true, true));
 
         selectCharacteristicList.remove(selectCharacteristicList.selectedIndex);
         

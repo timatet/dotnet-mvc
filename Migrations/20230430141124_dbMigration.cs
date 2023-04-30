@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnet_mvc.Migrations
 {
-    public partial class RestoreAll : Migration
+    public partial class dbMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,7 +42,7 @@ namespace dotnet_mvc.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Weight = table.Column<double>(type: "float", nullable: false),
+                    Weight = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Material = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ProductType = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserGender = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -84,6 +84,7 @@ namespace dotnet_mvc.Migrations
                     Cost = table.Column<double>(type: "float", nullable: false),
                     CountInStack = table.Column<int>(type: "int", nullable: false),
                     BrandId1 = table.Column<int>(type: "int", nullable: true),
+                    ProductCharacteristicId = table.Column<int>(type: "int", nullable: true),
                     Size = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
@@ -96,21 +97,29 @@ namespace dotnet_mvc.Migrations
                         principalTable: "Brands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Products_ProductCharacteristic_ProductCharacteristicId",
+                        column: x => x.ProductCharacteristicId,
+                        principalTable: "ProductCharacteristic",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_BrandId1",
                 table: "Products",
                 column: "BrandId1");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_ProductCharacteristicId",
+                table: "Products",
+                column: "ProductCharacteristicId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
                 name: "Logs");
-
-            migrationBuilder.DropTable(
-                name: "ProductCharacteristic");
 
             migrationBuilder.DropTable(
                 name: "Products");
@@ -120,6 +129,9 @@ namespace dotnet_mvc.Migrations
 
             migrationBuilder.DropTable(
                 name: "Brands");
+
+            migrationBuilder.DropTable(
+                name: "ProductCharacteristic");
         }
     }
 }

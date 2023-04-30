@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using dotnet_mvc.Models.Auxiliary;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace dotnet_mvc.Models.DataModels
 {

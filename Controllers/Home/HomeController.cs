@@ -28,17 +28,6 @@ namespace dotnet_mvc.Controllers
 
         public IActionResult Index()
         {
-            string connection_string = _configuration.GetConnectionString("DefaultConnection");
-
-            SqlConnection sqlConnection = new SqlConnection(connection_string);
-            sqlConnection.Open();
-            SqlCommand testSqlCommand = new SqlCommand("SELECT COUNT(*) FROM Logs", sqlConnection);
-            int count = (int) testSqlCommand.ExecuteScalar();
-
-            ViewData["TotalData"] = count;
-
-            sqlConnection.Close();
-
             var products = db.Products;
             return View(products);
         }

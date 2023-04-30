@@ -10,8 +10,8 @@ using dotnet_mvc.Models.DataModels;
 namespace dotnet_mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230430075615_RestoreAll")]
-    partial class RestoreAll
+    [Migration("20230430141124_dbMigration")]
+    partial class dbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,8 +88,8 @@ namespace dotnet_mvc.Migrations
                     b.Property<string>("UsingSeason")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
+                    b.Property<string>("Weight")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -124,12 +124,17 @@ namespace dotnet_mvc.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("ProductCharacteristicId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Size")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("BrandId1");
+
+                    b.HasIndex("ProductCharacteristicId");
 
                     b.ToTable("Products");
                 });
@@ -166,7 +171,13 @@ namespace dotnet_mvc.Migrations
                         .WithMany()
                         .HasForeignKey("BrandId1");
 
+                    b.HasOne("dotnet_mvc.Models.DataModels.ProductCharacteristic", "ProductCharacteristic")
+                        .WithMany()
+                        .HasForeignKey("ProductCharacteristicId");
+
                     b.Navigation("Brand");
+
+                    b.Navigation("ProductCharacteristic");
                 });
 #pragma warning restore 612, 618
         }

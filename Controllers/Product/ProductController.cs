@@ -48,13 +48,15 @@ namespace dotnet_mvc.Controllers.Product
             ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
             var attrs = ProductCharacteristic.GetAttributesNames();
             ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
+
             return View();
         }
 
         [HttpPost]
         public IActionResult New(
             ProductModel product,
-            IFormFile upload
+            IFormFile upload,
+            List<string> productCharacteristicList
         ) {
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
@@ -86,6 +88,13 @@ namespace dotnet_mvc.Controllers.Product
                     product.ImageUrl = fileName;
                 } 
             }
+
+            // Сохранение выбранных характеристик
+            ProductCharacteristic productCharacteristic = new ProductCharacteristic();
+            productCharacteristic.SetFields(productCharacteristicList);
+            db.ProductCharacteristics.Add(productCharacteristic);
+            db.SaveChanges();
+            product.ProductCharacteristic = productCharacteristic;
             
             // Записываем товар в базу данных
             db.Products.Add(product);
