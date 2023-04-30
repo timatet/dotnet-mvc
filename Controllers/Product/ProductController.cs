@@ -70,17 +70,19 @@ namespace dotnet_mvc.Controllers.Product
             if(upload!=null)
             {
                 string fileName = Path.GetFileName(upload.FileName);
-                var extFile = fileName.Substring(fileName.Length - 3);
-                if(extFile.Contains("png")|| extFile.Contains("jpg") ||
-                    extFile.Contains("bmp"))
+                string extFile = Path.GetExtension(fileName);
+                if(extFile.Contains(".png")|| extFile.Contains(".jpg") ||
+                    extFile.Contains(".bmp"))
                 {
                     var image = Image.Load(upload.OpenReadStream());
                     image.Mutate(x => x.Resize(ImageWidth, ImageHeight));
-                    // string path = "\\wwwroot\\images\\" + fileName;
+                    string imgGuid = Guid.NewGuid().ToString();
+                    string today = DateTime.Today.ToString("yyyy-MM-dd");
+                    fileName = today + "-" + imgGuid + extFile;
                     string path = environment.ContentRootPath + "/wwwroot/images/" + fileName;
                     image.Save(path);
                     product.ImageUrl = fileName;
-                }
+                } 
             }
             
             // Записываем товар в базу данных

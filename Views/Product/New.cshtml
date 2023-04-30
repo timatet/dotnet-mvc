@@ -113,7 +113,7 @@
 
             <div class="col-12">
                 <label for="productImage" class="form-label">Изображение товара</label>
-                <input class="form-control" name="upload" type="file" id="productImage" required>
+                <input class="form-control" name="upload" onchange="ValidateSingleInput(this);" type="file" id="productImage" required>
                 <div class="invalid-feedback">
                     Пожалуйста, выберите изображение товара.
                 </div>
@@ -168,4 +168,28 @@
         var productBrandList = document.getElementById("productBrandList");
         productBrandList.required = checkboxInput.checked ? true : false;
     } 
+    
+    var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".png"];    
+    function ValidateSingleInput(oInput) {
+        if (oInput.type == "file") {
+            var sFileName = oInput.value;
+            if (sFileName.length > 0) {
+                var blnValid = false;
+                for (var j = 0; j < _validFileExtensions.length; j++) {
+                    var sCurExtension = _validFileExtensions[j];
+                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
+                        blnValid = true;
+                        break;
+                    }
+                }
+                
+                if (!blnValid) {
+                    toastr.warning('К сожалению данный формат изображения не поддерживается!', 'Предупреждение');
+                    oInput.value = "";
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 </script>
