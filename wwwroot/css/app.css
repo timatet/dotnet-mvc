@@ -410,6 +410,14 @@ iframe {
   height: 100%;
   object-fit: cover;
 }
+.img-border-circle {
+  border-radius: 5%;
+}
+
+.img-shadow {
+  -webkit-filter: drop-shadow(5px 5px 5px #222);
+  filter: drop-shadow(5px 5px 5px #222);
+}
 
 .product-features {
   border: 1px solid #ccc;
@@ -435,4 +443,3 @@ iframe {
   font-weight: bold;
   margin-right: 10px;
 }
-

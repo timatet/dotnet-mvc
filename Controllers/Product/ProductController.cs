@@ -1,14 +1,18 @@
+using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using dotnet_mvc.Models.Auxiliary;
 using dotnet_mvc.Models.DataModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
@@ -36,7 +40,7 @@ namespace dotnet_mvc.Controllers.Product
                 return NotFound();
             }
               
-            var product = db.Products.FirstOrDefault(p => p.Id == id);
+            var product = db.Products.Include(p => p.ProductCharacteristic).Include(p => p.Brand).FirstOrDefault(p => p.Id == id);
             if (product == null) {
                 return NotFound();
             }

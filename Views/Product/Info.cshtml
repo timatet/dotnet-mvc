@@ -5,11 +5,17 @@
 }
 
 <div class="text-center">
-    <!--<div class="block-container flex-space-between">
+    <div class="block-container flex-space-between">
         <div class="flex-left">
-            <button type="button" class="btn btn-outline-primary">
+            <button type="button" class="btn btn-outline-primary"
+                style="margin-right: 2.5px;">
                 <i class="bi bi-folder-plus"></i>
-                Добавить товар
+                Редактировать товар
+            </button>
+            <button type="button" class="btn btn-outline-primary"
+                style="margin-left: 2.5px;">
+                <i class="bi bi-folder-plus"></i>
+                Удалить товар
             </button>
         </div>
         <div class="flex-right">
@@ -18,45 +24,75 @@
                 Корзина
             </button>
         </div>
-    </div>-->
+    </div>
 
     <div class="block-container row">
         <div class="flex-left">
             <h2 class="Inter-SemiBold">@Html.DisplayFor(model => model.Name)</h2>
         </div>
         <div class="row flex-space-between">
-            <div class="col rect-img-container flex-left">
-                <img src="@Url.Content("~/images/")@Html.DisplayFor(model => model.ImageUrl)" class="rect-img" alt="...">
+            <div class="col rect-img-container flex-left" style="margin-right: 20px;">
+                <img src='@Url.Content("~/images/")@Html.DisplayFor(model => model.ImageUrl)'
+                    class="rect-img img-border-circle img-shadow" style="padding: 10px;" alt="...">
             </div>
             <div class="col" style="position: relative;">
-                <h3 align="left">Описание:</h3>
-                <p align="left" style="margin-left: 10px;">
-                    @Html.DisplayFor(model => model.Description)
+                <h1 align="right" class="Inter-Bold">
+                    @Html.DisplayFor(model => model.Cost) ₽
+                </h1>
+                <p align="right" class="Inter-Medium">
+                    Остаток на складе: @Html.DisplayFor(model => model.CountInStack) шт.
                 </p>
-                <h3 align="left">Характеристики:</h3>
-                <ul style="text-align: left;">
-                    <div class="alert alert-secondary" role="alert">
-                        Настройка характеристик товара будет произведена позже.
+                <hr>
+                <nav style="margin-bottom: 15px;">
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-desc-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-desc" type="button" role="tab" aria-controls="nav-desc" aria-selected="true">Описание</button>
+                        <button class="nav-link" id="nav-char-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-char" type="button" role="tab" aria-controls="nav-char" aria-selected="false">Характеристики</button>
+                        <button class="nav-link" id="nav-brand-tab" data-bs-toggle="tab" 
+                            data-bs-target="#nav-brand" type="button" role="tab" aria-controls="nav-brand" aria-selected="false">О брэнде</button>
                     </div>
-                    <!--<li class="flex-space-between">
-                        <hr/>
-                        <div style="width: 50%;" class="flex-left">
-                            <strong>Вес (кг):</strong>
-                        </div>
-                        <div class="flex-left">
-                            0,99
-                        </div>
-                    </li>
-                    <li class="flex-space-between">
-                        <div style="width: 50%" class="flex-left">
-                            <strong>Материал:</strong>
-                        </div>
-                        <div class="flex-left">
-                            Кожа
-                        </div>
-                    </li>-->
-                </ul>
-
+                </nav>
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-desc" role="tabpanel" aria-labelledby="nav-desc-tab">
+                        <h3 align="left">Описание:</h3>
+                        <p align="left" style="margin-left: 10px;">
+                            @Html.DisplayFor(model => model.Description)
+                        </p>
+                    </div>
+                    <div class="tab-pane fade" id="nav-char" role="tabpanel" aria-labelledby="nav-char-tab">
+                        <h3 align="left">Характеристики:</h3>
+                        <ul style="text-align: left;">
+                            @if (Model.ProductCharacteristic.GetDisplaysAndValues().Count == 0) {
+                                <div class="alert alert-secondary" role="alert">
+                                    Характеристики для данного товара отсутствуют.
+                                </div>
+                            } else {
+                                @foreach (var item in Model.ProductCharacteristic.GetDisplaysAndValues())
+                                {
+                                    <li class="flex-space-between">
+                                        <hr/>
+                                        <div style="width: 50%;" class="flex-left">
+                                            <strong>@item.Key</strong>
+                                        </div>
+                                        <div class="flex-left">
+                                            @item.Value
+                                        </div>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade" id="nav-brand" role="tabpanel" aria-labelledby="nav-brand-tab">
+                        <h3 align="left">О брэнде:</h3>
+                        <h5 align="left" class="Inter-Black" style="margin-left: 10px;">
+                            @Html.DisplayFor(model => model.Brand.Name)
+                        </h5>
+                        <p align="left" style="margin-left: 10px;">
+                            @Html.DisplayFor(model => model.Brand.Description)
+                        </p>
+                    </div>
+                </div>
                 <div class="flex-center">
                     <a class="btn btn-primary btn-lg btn-block" style="text-align: center; width: 80%; position: absolute; bottom: 5%;">В корзину</a>
                 </div>

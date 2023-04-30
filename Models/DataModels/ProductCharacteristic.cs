@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection;
 
 namespace dotnet_mvc.Models.DataModels
 {
@@ -65,6 +66,22 @@ namespace dotnet_mvc.Models.DataModels
                 .Where(x => x != null).Select(x => x);
         }
 
-        
+        public Dictionary<string, string> GetDisplaysAndValues()
+        {
+            Dictionary<string, string> DisplaysAndValues = new Dictionary<string, string>();
+            var prop = this.GetType().GetProperties();
+            foreach (var p in prop) {
+                var propertyValue = p.GetValue(this);
+                var propertyName = (p.GetCustomAttributes(typeof(DisplayAttribute), true)
+                    .FirstOrDefault() as DisplayAttribute);
+
+                if (propertyValue != null && propertyName != null) {
+                    DisplaysAndValues.Add(propertyName.Name, propertyValue.ToString());
+                }
+            }
+
+            return DisplaysAndValues;
+        }
+
     }
 }
