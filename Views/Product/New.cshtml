@@ -170,22 +170,23 @@
     } 
     
     var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".png"];    
-    function ValidateSingleInput(oInput) {
-        if (oInput.type == "file") {
-            var sFileName = oInput.value;
-            if (sFileName.length > 0) {
-                var blnValid = false;
+    function ValidateSingleInput(fileInput) {
+        if (fileInput.type == "file") {
+            var fileInputValue = fileInput.value;
+            if (fileInputValue.length > 0) {
+                var fileInputValid = false;
                 for (var j = 0; j < _validFileExtensions.length; j++) {
-                    var sCurExtension = _validFileExtensions[j];
-                    if (sFileName.substr(sFileName.length - sCurExtension.length, sCurExtension.length).toLowerCase() == sCurExtension.toLowerCase()) {
-                        blnValid = true;
+                    var fileInputExtension = _validFileExtensions[j];
+                    if (fileInputValue.substr(fileInputValue.length - fileInputExtension.length, fileInputExtension.length).toLowerCase() 
+                            == fileInputExtension.toLowerCase()) {
+                        fileInputValid = true;
                         break;
                     }
                 }
                 
-                if (!blnValid) {
+                if (!fileInputValid) {
                     toastr.warning('К сожалению данный формат изображения не поддерживается!', 'Предупреждение');
-                    oInput.value = "";
+                    fileInput.value = "";
                     return false;
                 }
             }
