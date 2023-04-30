@@ -10,8 +10,8 @@ using dotnet_mvc.Models.DataModels;
 namespace dotnet_mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230429184709_AddImageUrlIntoProduct")]
-    partial class AddImageUrlIntoProduct
+    [Migration("20230430075615_RestoreAll")]
+    partial class RestoreAll
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -60,6 +60,42 @@ namespace dotnet_mvc.Migrations
                     b.ToTable("Logs");
                 });
 
+            modelBuilder.Entity("dotnet_mvc.Models.DataModels.ProductCharacteristic", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("ImpactProtection")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Material")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MoistureProtection")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PresenceOfMembrane")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProductType")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserGender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UsingSeason")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductCharacteristic");
+                });
+
             modelBuilder.Entity("dotnet_mvc.Models.DataModels.ProductModel", b =>
                 {
                     b.Property<int>("Id")
@@ -85,17 +121,11 @@ namespace dotnet_mvc.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Material")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Size")
                         .HasColumnType("int");
-
-                    b.Property<double>("Weight")
-                        .HasColumnType("float");
 
                     b.HasKey("Id");
 

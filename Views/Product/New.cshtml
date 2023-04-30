@@ -45,30 +45,31 @@
                 </select>
             </div>-->
             <div class="col-5">
-                <label for="productParameter" class="form-label">Характеристика</label>
-                <input type="text" class="form-control" id="productParameter" placeholder="Вес">
-            </div>
-            <div class="col-5">
-                <label for="productParameterName" class="form-label">Значение</label>
-                <input type="text" class="form-control" id="productParameterName" placeholder="0,975 кг">
-            </div>
-            <div class="col-2">
-                <label for="productParameterAddButton" class="form-label">Добавить</label>
-                <a class="btn btn-outline-primary form-control" id="productParameterAddButton">
-                    <i class="bi bi-basket"></i>
-                    Добавить
-                </a>
-            </div>
-            <div class="col-12">
-                <label for="productParameterList" class="form-label">Добавленные характеристики</label>
-                <select class="form-select" size="3" aria-label="Добавленные характеристики" id="productParameterList">
-                    <option value="0">Open this select menu</option>
-                    <option value="1">One</option>
-                    <option value="2">Two</option>
-                    <option value="3">Three</option>
+                <label for="productCharacteristic" class="form-label">Характеристика</label>
+                <select 
+                    class="form-select" asp-items="ViewBag.CharacteristicList"
+                    aria-label="Добавленные характеристики" id="productCharacteristic">
                 </select>
             </div>
-            <!-- TODO: Должен быть список добавляемых параметров. Передавать именно его -->
+            <div class="col-5">
+                <label for="productCharacteristicName" class="form-label">Значение</label>
+                <input type="text" class="form-control" id="productCharacteristicName" placeholder="0,975 кг">
+            </div>
+            <div class="col-2">
+                <label for="productCharacteristicAddButton" class="form-label">Добавить</label>
+                <button type="button" class="btn btn-outline-primary form-control" 
+                    id="productCharacteristicAddButton" onclick="AddNewCharacteristic()">
+                    <i class="bi bi-basket"></i>
+                    Добавить
+                </button>
+            </div>
+            <div class="col-12">
+                <label for="productCharacteristicList" class="form-label">Добавленные характеристики</label>
+                <select 
+                    class="form-select" size="5" 
+                    aria-label="Добавленные характеристики" id="productCharacteristicList">
+                </select>
+            </div>
 
             <div class="col-12">
                 <div class="form-check form-switch">
@@ -192,5 +193,35 @@
             }
         }
         return true;
+    }
+    
+    function AddNewCharacteristic() {
+        var selectCharacteristicList = document.getElementById("productCharacteristic");
+        var selectedOption = selectCharacteristicList[selectCharacteristicList.selectedIndex];
+
+        var productCharacteristicName = document.getElementById("productCharacteristicName");
+        var selectedValue = productCharacteristicName.value;
+
+        if (selectedValue == "" || selectedValue == undefined || selectedValue == null) {
+            toastr.warning("Поле значения должно быть заполнено!", "Предупреждение");
+            productCharacteristicName.classList.add('is-invalid');
+            return;
+        } else {
+            productCharacteristicName.classList.remove('is-invalid');
+            productCharacteristicName.value = "";
+        }
+
+        var selectedText = selectedOption.text + " (" + selectedValue + ")";
+
+        var listSelecteds = document.getElementById("productCharacteristicList");
+        listSelecteds.appendChild(new Option(selectedText, selectedValue));
+
+        selectCharacteristicList.remove(selectCharacteristicList.selectedIndex);
+        
+        if (selectCharacteristicList.options.length == 0) {
+            selectCharacteristicList.disabled = true;
+            document.getElementById("productCharacteristicName").disabled = true;
+            document.getElementById("productCharacteristicAddButton").disabled = true;
+        }
     }
 </script>

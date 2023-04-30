@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 using dotnet_mvc.Models.Auxiliary;
-using dotnet_mvc.Models.DataModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_mvc.Models.DataModels
@@ -30,9 +25,7 @@ namespace dotnet_mvc.Models.DataModels
 
         public BrandModel Brand { get; set; }
 
-        public double Weight { get; set; }
-
-        public string Material { get; set; }
+        public ProductCharacteristic ProductCharacteristic { get; set; }
 
         public int Size { get; set; }
 

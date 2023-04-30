@@ -46,6 +46,8 @@ namespace dotnet_mvc.Controllers.Product
 
         public IActionResult New() {
             ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
+            var attrs = ProductCharacteristic.GetAttributesNames();
+            ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
             return View();
         }
 
