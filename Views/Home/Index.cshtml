@@ -1,4 +1,4 @@
-﻿@model IEnumerable<dotnet_mvc.Models.DataModels.ProductModel>
+﻿@model dotnet_mvc.Models.HelpModels.ProductListModel;
 
 @{
     ViewData["Title"] = "Home Page";
@@ -27,7 +27,7 @@
         </div>
     </div>
 
-    @if (Model.Count() == 0)
+    @if (Model.productList.Count() == 0)
     {
         <div class="alert alert-warning" role="alert">
             В данный момент в магазине отсутствуют товары. Приходите позже :)
@@ -35,7 +35,7 @@
     }
 
     <div class="block-container row">
-        @foreach (var productModel in Model)
+        @foreach (var productModel in Model.productList)
         {
             <div class="col-md-3 col-sm-4">
                 <div class="card in-card">
@@ -49,12 +49,32 @@
                         </p>
                         <div class="flex-space-between">
                             <a asp-controller="Product" asp-action="Info" asp-route-id="@productModel.Id" class="btn btn-primary">Открыть</a>
-                            <a asp-controller="Product" asp-action="Info" asp-route-id="12" class="btn btn-primary">В корзину</a>
+                            <a class="btn btn-primary">В корзину</a>
                         </div>
                     </div>
                 </div>
             </div>
         }
     </div>
-   
 </div>
+
+@section Scripts {
+  <script type="text/javascript">
+    checkHashAfterRedirect();
+    
+    function checkHashAfterRedirect() {
+        var windowHash = window.location.hash;
+        if (windowHash === '#successDelete') {
+            toastr.success('Продукт был успешно удален.', 'Успех');
+        } else if (windowHash === '#errorDelete') {
+            toastr.error('При удалении произошла какая-то ошибка.', 'Ошибка');
+        }
+
+        removeHash();
+    }
+
+    function removeHash () { 
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+  </script>
+}

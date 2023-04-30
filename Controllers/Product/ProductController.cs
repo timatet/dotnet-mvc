@@ -17,6 +17,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using dotnet_mvc.Models.HelpModels;
+using System.Text.Json;
+using Newtonsoft.Json;
 
 namespace dotnet_mvc.Controllers.Product
 {
@@ -105,6 +108,36 @@ namespace dotnet_mvc.Controllers.Product
             db.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public bool Delete()
+        {
+            Dictionary<string, object> response = new Dictionary<string, object>();
+
+            // Чтение данных передаваемых в POST запросе
+            MemoryStream stream = new MemoryStream();
+            Request.Body.CopyTo(stream);
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string requestBody = reader.ReadToEnd();
+                if (requestBody.Length > 0)
+                {
+                    response = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
+                }
+            }
+
+            try {
+                int productId = int.Parse(response["id"].ToString());
+                ProductModel product = db.Products.Find(productId);
+                db.Products.Remove(product);
+                db.SaveChanges();
+            } catch {
+                return false;
+            }
+            
+            return true;
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Data.SqlClient;
 using dotnet_mvc.Models.DataModels;
 using Microsoft.EntityFrameworkCore;
+using dotnet_mvc.Models.HelpModels;
 
 namespace dotnet_mvc.Controllers
 {
@@ -28,8 +29,10 @@ namespace dotnet_mvc.Controllers
 
         public IActionResult Index()
         {
-            var products = db.Products;
-            return View(products);
+            ProductListModel productListModel = new ProductListModel();
+            productListModel.productList = db.Products;
+
+            return View(productListModel);
         }
 
         public IActionResult Privacy()

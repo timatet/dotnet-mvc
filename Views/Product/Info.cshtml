@@ -13,6 +13,7 @@
                 Редактировать товар
             </button>
             <button type="button" class="btn btn-outline-primary"
+                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                 style="margin-left: 2.5px;">
                 <i class="bi bi-folder-plus"></i>
                 Удалить товар
@@ -102,3 +103,39 @@
     </div> 
    
 </div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Удаление товара</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        Подтвердите удаление товара. Данное действие отменить будет невозможно. 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-danger" onclick="postreq();">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    function postreq() {
+        axios.post('/Product/Delete', {
+            id: @Model.Id
+        })
+        .then(function (response) {
+            if (response.data == true) {
+                window.location.href = '/Home/Index#successDelete';
+            } else {
+                window.location.href = '/Home/Index#errorDelete';
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+</script>
