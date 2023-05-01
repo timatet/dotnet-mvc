@@ -20,6 +20,7 @@ using SixLabors.ImageSharp.Processing;
 using dotnet_mvc.Models.HelpModels;
 using System.Text.Json;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace dotnet_mvc.Controllers.Product
 {
@@ -53,7 +54,6 @@ namespace dotnet_mvc.Controllers.Product
 
         public IActionResult New() {
             ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
-            var attrs = ProductCharacteristic.GetAttributesNames();
             ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
 
             return View();
@@ -108,6 +108,73 @@ namespace dotnet_mvc.Controllers.Product
             db.SaveChanges();
 
             return RedirectToAction("Index", "Home");
+        }
+
+        [HttpPost]
+        public IActionResult Edit(
+            ProductModel product,
+            IFormFile upload,
+            List<string> productCharacteristicList
+        ) {
+            // Сохраняем изображение товара если было загружено новое
+            if(upload != null)
+            {
+                string fileName = Path.GetFileName(upload.FileName);
+                string extFile = Path.GetExtension(fileName);
+                if(extFile.Contains(".png")|| extFile.Contains(".jpg") ||
+                    extFile.Contains(".bmp"))
+                {
+                    var image = Image.Load(upload.OpenReadStream());
+                    image.Mutate(x => x.Resize(ImageWidth, ImageHeight));
+                    string imgGuid = Guid.NewGuid().ToString();
+                    string today = DateTime.Today.ToString("yyyy-MM-dd");
+                    fileName = today + "-" + imgGuid + extFile;
+                    string path = environment.ContentRootPath + "/wwwroot/images/" + fileName;
+                    image.Save(path);
+                    product.ImageUrl = fileName;
+                } 
+            } 
+
+            // Сохранение выбранных характеристик
+            ProductCharacteristic productCharacteristic = db.ProductCharacteristics.Find(product.ProductCharacteristic.Id);
+            productCharacteristic.SetFields(productCharacteristicList);
+            db.ProductCharacteristics.Update(productCharacteristic);
+            db.SaveChanges();
+            product.ProductCharacteristic = productCharacteristic;
+            
+            // Обновляем товар в базе данных
+            db.Products.Update(product);
+            db.SaveChanges();
+
+            return RedirectToAction("Info", "Product", new { id = product.Id });
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var product = db.Products
+                .Include(p => p.Brand)
+                .Include(p => p.ProductCharacteristic)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (product == null)
+                return NotFound();
+
+            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
+
+            // Выбираем список характеристик, которые уже заполнены у товара
+            var characteristicListAvailable = product.ProductCharacteristic.GetDisplaysAndValuesPresent();
+            ViewData["CharacteristicListAvailable"] = new MultiSelectList((IEnumerable)characteristicListAvailable, 
+                "Value", "Key", (IEnumerable)characteristicListAvailable.Select(key => key.Value));
+
+            // Убираем выбранные из списка предлагаемых характеристик
+            ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames()
+                .Where(k => characteristicListAvailable.All(_k => _k.Value.Split('&')[0] != k.ShortName)), "ShortName", "Name");
+
+            return View(product);
         }
 
         [HttpPost]

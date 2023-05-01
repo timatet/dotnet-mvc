@@ -83,5 +83,23 @@ namespace dotnet_mvc.Models.DataModels
             return DisplaysAndValues;
         }
 
+        public Dictionary<string, string> GetDisplaysAndValuesPresent()
+        {
+            Dictionary<string, string> DisplaysAndValues = new Dictionary<string, string>();
+            var prop = this.GetType().GetProperties();
+            foreach (var p in prop) {
+                var propertyValue = p.GetValue(this);
+                var propertyName = (p.GetCustomAttributes(typeof(DisplayAttribute), true)
+                    .FirstOrDefault() as DisplayAttribute);
+
+                if (propertyValue != null && propertyName != null) {
+                    DisplaysAndValues.Add(string.Format("{0} ({1})", propertyName.Name, propertyValue.ToString()), 
+                    string.Format("{0}&{1}", propertyName.GetShortName(), propertyValue.ToString()));
+                }
+            }
+
+            return DisplaysAndValues;
+        }
+
     }
 }

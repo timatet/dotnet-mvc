@@ -48,8 +48,15 @@
                             </span>
                         </p>
                         <div class="flex-space-between">
-                            <a asp-controller="Product" asp-action="Info" asp-route-id="@productModel.Id" class="btn btn-primary">Открыть</a>
-                            <a class="btn btn-primary">В корзину</a>
+                            <a asp-action="Info" asp-controller="Product" asp-route-id="@productModel.Id"
+                                role="button" class="btn btn-primary">
+                                <i class="bi bi-eye"></i>
+                                Открыть
+                            </a>
+                            <a class="btn btn-primary">
+                                <i class="bi bi-cart-plus"></i>
+                                В корзину
+                            </a>
                         </div>
                     </div>
                 </div>

@@ -1,0 +1,229 @@
+@model dotnet_mvc.Models.DataModels.ProductModel
+
+@{
+    ViewData["Title"] = "Редактирование товара";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    <div class="block-container">
+        <form asp-action="Edit" enctype="multipart/form-data" method="post" class="needs-validation row g-3" novalidate> 
+            <div class="col-12">
+                <label for="productName" class="form-label">Название товара</label>
+                <input asp-for="Name" type="text" class="form-control" id="productName" placeholder="Ботинки альпинистские Zamberlan" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите название товара.
+                </div>
+            </div>
+            
+            <div class="col-12">
+                <label for="productCategory" class="form-label">Выбор категории товара</label>
+                <select 
+                    asp-for="Category"
+                    class="form-select" asp-items="Html.GetEnumSelectList<dotnet_mvc.Models.Auxiliary.CategoryEnum>()" 
+                    aria-label="Выбор категории товара" id="productCategory">
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label for="productDescription" class="form-label">Описание товара</label>
+                <textarea 
+                    asp-for="Description" minlength="30" class="form-control" 
+                    id="productDescription" rows="3" placeholder="Описание товара" required>
+                </textarea>
+                <div class="invalid-feedback">
+                    Пожалуйста, введите описание товара (от 30 символов).
+                </div>
+            </div>
+
+            <div class="col-5">
+                <label for="productCharacteristic" class="form-label">Характеристика</label>
+                <select 
+                    class="form-select" asp-items="ViewBag.CharacteristicList"
+                    aria-label="Добавленные характеристики" id="productCharacteristic">
+                </select>
+            </div>
+            <div class="col-5">
+                <label for="productCharacteristicName" class="form-label">Значение</label>
+                <input type="text" class="form-control" id="productCharacteristicName" placeholder="0,975 кг">
+            </div>
+            <div class="col-2">
+                <label for="productCharacteristicAddButton" class="form-label">Добавить</label>
+                <button type="button" class="btn btn-outline-primary form-control" 
+                    id="productCharacteristicAddButton" onclick="AddNewCharacteristic()">
+                    <i class="bi bi-basket"></i>
+                    Добавить
+                </button>
+            </div>
+            <div class="col-12">
+                <label for="productCharacteristicList" class="form-label">Добавленные характеристики</label>
+                <select 
+                    class="form-select" size="5" asp-items="@ViewBag.CharacteristicListAvailable"
+                    aria-label="Добавленные характеристики" id="productCharacteristicList" multiple
+                    name="productCharacteristicList" onmousedown="(function(e){ e.preventDefault(); })(event, this)">
+                </select>
+            </div>
+
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" onclick="SwitchBrandFields(this)" >
+                    <label class="form-check-label" for="flexSwitchCheckDefault">Включите, чтобы выбрать бренд среди существующих</label>
+                </div>
+            </div>
+            <div class="col-12" id="productBrandListGroup" hidden>
+                <label for="productBrandList" class="form-label">Доступные бренды</label>
+                <select 
+                    asp-for="BrandId"
+                    class="form-select" asp-items="ViewBag.BrandList" 
+                    aria-label="Доступные бренды" id="productBrandList">
+                </select>
+            </div>
+            <div class="col-4">
+                <label for="productBrand" class="form-label">Бренд товара</label>
+                <input asp-for="Brand.Name" type="text" class="form-control" id="productBrand" placeholder="Zamberlan" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, кажите производителя товара.
+                </div>
+            </div>
+            <div class="col-4">
+                <label for="productCost" class="form-label">Стоимость</label>
+                <input asp-for="Cost" type="number" min="1" max="50000" class="form-control" id="productCost" placeholder="5700" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите стоимость товара (1 - 50000).
+                </div>
+            </div>
+            <div class="col-4">
+                <label for="productCountInStock" class="form-label">Количество на складе</label>
+                <input asp-for="CountInStack" type="number" min="0" class="form-control" id="productCountInStock" placeholder="51" required>
+                <div class="invalid-feedback">
+                    Пожалуйста, укажите количество товара на складе.
+                </div>
+            </div>
+
+            <div class="col-12">
+                <label for="productBrandDescription" class="form-label">Информация о бренде товара</label>
+                <textarea asp-for="Brand.Description" class="form-control" id="productBrandDescription" rows="3" placeholder="Описание бренда"></textarea>
+            </div>
+
+            <div class="col-12">
+                <label for="productImage" class="form-label">Изображение товара</label>
+                <input class="form-control" name="upload" onchange="ValidateSingleInput(this);" type="file" id="productImage">
+                <div class="form-text">
+                    Изображение поменяется только в случае выбора нового. Оставьте поле пустым, чтобы сохранить предыдущее.
+                </div>
+                <div class="invalid-feedback">
+                    Пожалуйста, выберите изображение товара.
+                </div>
+            </div>
+
+            <!-- Передача необновляемых параметров -->
+            <input asp-for="ProductCharacteristic.Id" type="hidden">
+            <input asp-for="ImageUrl" type="hidden">
+
+            <div class="col-12 flex-right">
+                <a asp-action="Index" asp-controller="Home" type="button" class="btn btn-secondary" style="margin-right: 3px;">Отмена</a>
+                <button asp-fragment="edited" type="submit" class="btn btn-primary" style="margin-left: 3px;">Изменить товар</button>
+            </div>
+        </form>
+    </div>  
+</div>
+
+<script>
+    /* Скрипт проверки валидации формы */
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            var forms = document.getElementsByClassName('needs-validation');
+            var validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        var invalidOptions = document.querySelectorAll(".form-control:invalid");
+                        invalidOptions.forEach(function(element) {
+                            element.parentNode.childNodes.forEach(function(node) {
+                                if (node.className == 'valid-feedback') {
+                                    node.className = 'invalid-feedback';
+                                }
+                            });
+                        });
+                        $('html, body').animate({
+                            scrollTop: $(invalidOptions[0]).offset().top
+                        }, 2000);
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    function SwitchBrandFields(checkboxInput) {
+        // Скрываем элементы ввода нового бренда
+        var productBrand = document.getElementById("productBrand");
+        productBrand.disabled = checkboxInput.checked ? true : false;
+        productBrand.required = checkboxInput.checked ? false : true;
+        var productBrandDescription = document.getElementById("productBrandDescription");
+        productBrandDescription.disabled = checkboxInput.checked ? true : false;
+        // Показываем существующие
+        var productBrandListGroup = document.getElementById("productBrandListGroup");
+        productBrandListGroup.hidden = checkboxInput.checked ? false : true;
+        var productBrandList = document.getElementById("productBrandList");
+        productBrandList.required = checkboxInput.checked ? true : false;
+    } 
+    
+    var _validFileExtensions = [".jpg", ".jpeg", ".bmp", ".png"];    
+    function ValidateSingleInput(fileInput) {
+        if (fileInput.type == "file") {
+            var fileInputValue = fileInput.value;
+            if (fileInputValue.length > 0) {
+                var fileInputValid = false;
+                for (var j = 0; j < _validFileExtensions.length; j++) {
+                    var fileInputExtension = _validFileExtensions[j];
+                    if (fileInputValue.substr(fileInputValue.length - fileInputExtension.length, fileInputExtension.length).toLowerCase() 
+                            == fileInputExtension.toLowerCase()) {
+                        fileInputValid = true;
+                        break;
+                    }
+                }
+                
+                if (!fileInputValid) {
+                    toastr.warning('К сожалению данный формат изображения не поддерживается!', 'Предупреждение');
+                    fileInput.value = "";
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    function AddNewCharacteristic() {
+        var selectCharacteristicList = document.getElementById("productCharacteristic");
+        var selectedOption = selectCharacteristicList[selectCharacteristicList.selectedIndex];
+
+        var productCharacteristicName = document.getElementById("productCharacteristicName");
+        var selectedValue = productCharacteristicName.value;
+
+        if (selectedValue == "" || selectedValue == undefined || selectedValue == null) {
+            toastr.warning("Поле значения должно быть заполнено!", "Предупреждение");
+            productCharacteristicName.classList.add('is-invalid');
+            return;
+        } else {
+            productCharacteristicName.classList.remove('is-invalid');
+            productCharacteristicName.value = "";
+        }
+
+        var selectedText = selectedOption.text + " (" + selectedValue + ")";
+
+        var listSelecteds = document.getElementById("productCharacteristicList");
+        listSelecteds.appendChild(new Option(selectedText, selectedOption.value + "&" + selectedValue, true, true));
+
+        selectCharacteristicList.remove(selectCharacteristicList.selectedIndex);
+        
+        if (selectCharacteristicList.options.length == 0) {
+            selectCharacteristicList.disabled = true;
+            document.getElementById("productCharacteristicName").disabled = true;
+            document.getElementById("productCharacteristicAddButton").disabled = true;
+        }
+    }
+</script>

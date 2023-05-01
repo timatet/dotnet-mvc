@@ -7,23 +7,25 @@
 <div class="text-center">
     <div class="block-container flex-space-between">
         <div class="flex-left">
-            <button type="button" class="btn btn-outline-primary"
+            <a type="button" class="btn btn-outline-primary"
+                asp-action="Edit" asp-route-id="@Model.Id"
                 style="margin-right: 2.5px;">
-                <i class="bi bi-folder-plus"></i>
+                <i class="bi bi-pencil-square"></i>
                 Редактировать товар
-            </button>
-            <button type="button" class="btn btn-outline-primary"
+            </a>
+            <a type="button" class="btn btn-outline-primary"
                 data-bs-toggle="modal" data-bs-target="#staticBackdrop"
                 style="margin-left: 2.5px;">
-                <i class="bi bi-folder-plus"></i>
+                <i class="bi bi-folder-minus"></i>
                 Удалить товар
-            </button>
+            </a>
         </div>
         <div class="flex-right">
-            <button type="button" class="btn btn-outline-primary">
+            <a asp-controller="Account" asp-action="Basket" 
+                type="button" class="btn btn-outline-primary">
                 <i class="bi bi-basket"></i>
                 Корзина
-            </button>
+            </a>
         </div>
     </div>
 
@@ -94,8 +96,19 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex-center">
-                    <a class="btn btn-primary btn-lg btn-block" style="text-align: center; width: 80%; position: absolute; bottom: 5%;">В корзину</a>
+                <div class="flex-space-between" style="position: absolute; bottom: 5%;">
+                    <div class="flex-left">
+                        <a class="btn btn-outline-primary btn-lg">
+                            <i class="bi bi-cart-plus"></i>
+                            В корзину
+                        </a>
+                    </div>
+                    <div class="flex-right">
+                        <a asp-action="Index" asp-controller="Home" 
+                            class="btn btn-secondary btn-lg" style="margin-right: 25px;">
+                            Вернуться назад
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -116,14 +129,14 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
-        <button type="button" class="btn btn-danger" onclick="postreq();">Удалить</button>
+        <button type="button" class="btn btn-danger" onclick="postDeleteRequest();">Удалить</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-    function postreq() {
+    function postDeleteRequest() {
         axios.post('/Product/Delete', {
             id: @Model.Id
         })
@@ -139,3 +152,22 @@
         });
     }
 </script>
+
+@section Scripts {
+  <script type="text/javascript">
+    checkHashAfterRedirect();
+    
+    function checkHashAfterRedirect() {
+        var windowHash = window.location.hash;
+        if (windowHash === '#edited') {
+            toastr.success('Продукт был отредактирован.', 'Успех');
+        } 
+
+        removeHash();
+    }
+
+    function removeHash () { 
+        history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+  </script>
+}
