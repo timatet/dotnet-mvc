@@ -11,26 +11,39 @@ using Microsoft.Data.SqlClient;
 using dotnet_mvc.Models.DataModels;
 using Microsoft.EntityFrameworkCore;
 using dotnet_mvc.Models.HelpModels;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace dotnet_mvc.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         public IConfiguration _configuration { get; }
+        
         private readonly ApplicationDbContext db;
 
-        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, ApplicationDbContext applicationDbContext)
+        public HomeController(
+            ILogger<HomeController> logger, 
+            IConfiguration configuration, 
+            ApplicationDbContext applicationDbContext, 
+            IWebHostEnvironment webHostEnvironment
+        )
         {
             _logger = logger;
             _configuration = configuration;
             db = applicationDbContext;
+            _webHostEnvironment = webHostEnvironment;
         } 
 
         public IActionResult Index()
         {
             ProductListModel productListModel = new ProductListModel();
             productListModel.productList = db.Products;
+
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            ViewData["WebRootPath"] = webRootPath;
 
             return View(productListModel);
         }

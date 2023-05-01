@@ -1,0 +1,25 @@
+<svg
+	width="150px" height="150px" 
+	xmlns="http://www.w3.org/2000/svg" >
+  <defs >
+    <style type="text/css">
+      #text-group text { 
+        fill:rgba(255,255,255,.75);
+        font-weight:normal;
+        font-family:Helvetica, monospace;
+        font-size:14pt 
+      } 
+    </style>
+  </defs>
+  <g id="text-group">
+    <rect x="0" y="0" width="100%" height="100%" fill="#777" ></rect>
+    <text text-anchor="middle" >
+      <tspan x="4em" dy="3.7em">
+        Изображение
+      </tspan>
+      <tspan x="4em" dy="1em">
+         не установлено
+      </tspan>
+    </text>
+  </g>
+</svg>
