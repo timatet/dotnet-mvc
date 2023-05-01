@@ -21,22 +21,27 @@ using dotnet_mvc.Models.HelpModels;
 using System.Text.Json;
 using Newtonsoft.Json;
 using System.Collections;
+using Microsoft.AspNetCore.Hosting;
 
 namespace dotnet_mvc.Controllers.Product
 {
     public class ProductController : Controller
     {
         private readonly ILogger<ProductController> _logger;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext db;
-        IHostEnvironment environment;
+        
         const int ImageWidth = 300;
         const int ImageHeight = 300;
 
-        public ProductController(ILogger<ProductController> logger, ApplicationDbContext applicationDbContext, IHostEnvironment env)
+        public ProductController(
+            ILogger<ProductController> logger, 
+            ApplicationDbContext applicationDbContext, 
+            IWebHostEnvironment webHostEnvironment)
         {
             _logger = logger;
             db = applicationDbContext;
-            environment = env;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public IActionResult Info(int? id) {
@@ -48,6 +53,9 @@ namespace dotnet_mvc.Controllers.Product
             if (product == null) {
                 return NotFound();
             }
+
+            string webRootPath = _webHostEnvironment.WebRootPath;
+            ViewData["WebRootPath"] = webRootPath;
                
             return View(product);
         }
@@ -90,7 +98,8 @@ namespace dotnet_mvc.Controllers.Product
                     string imgGuid = Guid.NewGuid().ToString();
                     string today = DateTime.Today.ToString("yyyy-MM-dd");
                     fileName = today + "-" + imgGuid + extFile;
-                    string path = environment.ContentRootPath + "/wwwroot/images/" + fileName;
+
+                    string path = _webHostEnvironment.WebRootPath + "/images/" + fileName;
                     image.Save(path);
                     product.ImageUrl = fileName;
                 } 
@@ -129,8 +138,15 @@ namespace dotnet_mvc.Controllers.Product
                     string imgGuid = Guid.NewGuid().ToString();
                     string today = DateTime.Today.ToString("yyyy-MM-dd");
                     fileName = today + "-" + imgGuid + extFile;
-                    string path = environment.ContentRootPath + "/wwwroot/images/" + fileName;
+                    string path = _webHostEnvironment.WebRootPath + "/images/" + fileName;
                     image.Save(path);
+
+                    // Удаляем предыдущее изображение
+                    if (product.ImageUrl != null && product.ImageUrl != "") {
+                        string imagePath = _webHostEnvironment.WebRootPath + "/images/" + product.ImageUrl;
+                        System.IO.File.Delete(imagePath);
+                    }
+
                     product.ImageUrl = fileName;
                 } 
             } 
@@ -198,6 +214,12 @@ namespace dotnet_mvc.Controllers.Product
             try {
                 int productId = int.Parse(response["id"].ToString());
                 ProductModel product = db.Products.Find(productId);
+
+                if (product.ImageUrl != null && product.ImageUrl != "") {
+                    string imagePath = _webHostEnvironment.WebRootPath + "/images/" + product.ImageUrl;
+                    System.IO.File.Delete(imagePath);
+                }
+
                 db.Products.Remove(product);
                 db.SaveChanges();
             } catch {
