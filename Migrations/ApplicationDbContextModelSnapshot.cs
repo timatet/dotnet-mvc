@@ -101,7 +101,7 @@ namespace dotnet_mvc.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("BrandId1")
+                    b.Property<int?>("BrandId")
                         .HasColumnType("int");
 
                     b.Property<int>("Category")
@@ -125,12 +125,9 @@ namespace dotnet_mvc.Migrations
                     b.Property<int?>("ProductCharacteristicId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Size")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("BrandId1");
+                    b.HasIndex("BrandId");
 
                     b.HasIndex("ProductCharacteristicId");
 
@@ -167,7 +164,7 @@ namespace dotnet_mvc.Migrations
                 {
                     b.HasOne("dotnet_mvc.Models.DataModels.BrandModel", "Brand")
                         .WithMany()
-                        .HasForeignKey("BrandId1");
+                        .HasForeignKey("BrandId");
 
                     b.HasOne("dotnet_mvc.Models.DataModels.ProductCharacteristic", "ProductCharacteristic")
                         .WithMany()

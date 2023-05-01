@@ -1,9 +1,8 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace dotnet_mvc.Models.Auxiliary
 {
-    public enum CategoryEnum
+  public enum CategoryEnum
     {
         [Display(Name = "Спорт")]
         Sport,

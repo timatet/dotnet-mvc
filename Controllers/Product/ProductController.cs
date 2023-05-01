@@ -1,31 +1,22 @@
-using System.ComponentModel.DataAnnotations;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using dotnet_mvc.Models.Auxiliary;
 using dotnet_mvc.Models.DataModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using dotnet_mvc.Models.HelpModels;
-using System.Text.Json;
 using Newtonsoft.Json;
 using System.Collections;
 using Microsoft.AspNetCore.Hosting;
 
 namespace dotnet_mvc.Controllers.Product
 {
-    public class ProductController : Controller
+  public class ProductController : Controller
     {
         private readonly ILogger<ProductController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
@@ -76,13 +67,12 @@ namespace dotnet_mvc.Controllers.Product
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
             if (productBrand is null) {
-                productBrand = db.Brands.Find(product.BrandId);
+                productBrand = db.Brands.Find(product.Brand.Id);
                 product.Brand = productBrand;
             } else {
                 db.Brands.Add(productBrand);
                 db.SaveChanges();
                 int brandId = productBrand.Id;
-                product.BrandId = brandId;
             }
 
             // Сохраняем изображение товара

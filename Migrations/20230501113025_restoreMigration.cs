@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace dotnet_mvc.Migrations
 {
-    public partial class dbMigration : Migration
+    public partial class restoreMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -83,17 +83,16 @@ namespace dotnet_mvc.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Cost = table.Column<double>(type: "float", nullable: false),
                     CountInStack = table.Column<int>(type: "int", nullable: false),
-                    BrandId1 = table.Column<int>(type: "int", nullable: true),
+                    BrandId = table.Column<int>(type: "int", nullable: true),
                     ProductCharacteristicId = table.Column<int>(type: "int", nullable: true),
-                    Size = table.Column<int>(type: "int", nullable: false),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Brands_BrandId1",
-                        column: x => x.BrandId1,
+                        name: "FK_Products_Brands_BrandId",
+                        column: x => x.BrandId,
                         principalTable: "Brands",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -106,9 +105,9 @@ namespace dotnet_mvc.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_BrandId1",
+                name: "IX_Products_BrandId",
                 table: "Products",
-                column: "BrandId1");
+                column: "BrandId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_ProductCharacteristicId",

@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using dotnet_mvc.Models;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Data.SqlClient;
 using dotnet_mvc.Models.DataModels;
-using Microsoft.EntityFrameworkCore;
 using dotnet_mvc.Models.HelpModels;
 using Microsoft.AspNetCore.Hosting;
-using System.IO;
 
 namespace dotnet_mvc.Controllers
 {
-    public class HomeController : Controller
+  public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
