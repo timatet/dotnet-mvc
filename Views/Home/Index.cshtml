@@ -20,7 +20,13 @@
             </a>
         </div>
         <div class="flex-right">
-            <a asp-controller="Account" asp-action="Basket" class="btn btn-outline-primary">
+            <a class="btn btn-outline-primary" style="margin-right: 2.5px;"
+                onclick="showHideFilters();" id="openCloseFilterButton">
+                <i class="bi bi-funnel"></i>
+                Фильтры
+            </a>
+            <a asp-controller="Account" asp-action="Basket" 
+                class="btn btn-outline-primary" style="margin-left: 2.5px;">
                 <i class="bi bi-basket"></i>
                 Корзина
             </a>
@@ -33,6 +39,66 @@
             В данный момент в магазине отсутствуют товары. Приходите позже :)
         </div>
     }
+
+    <div class="block-container row" id="filters" onchange="validFilterParameters();" hidden>
+        <div class="flex-left">
+            <h2 class="Inter-SemiBold">Фильтры:</h2>
+        </div>
+
+        <div class="col-2">
+            <label for="filterBrandSelect" class="form-label flex-left">Бренд:</label>
+            <select asp-items="@ViewBag.BrandList" id="filterBrandSelect"
+                class="form-select" aria-label="Default select example">
+                <option value="-1" selected>Не выбран</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <label for="filterCharacteristicSelect" class="form-label flex-left">Параметр:</label>
+            <select asp-items="@ViewBag.CharacteristicList" id="filterCharacteristicSelect"
+                class="form-select" aria-label="Default select example">
+                <option value="NoSelect" selected>Не выбран</option>
+            </select>
+        </div>
+        <div class="col-2 position-relative">
+            <label for="filterCharacteristicName" class="form-label flex-left">Значение</label>
+            <input type="text" class="form-control" disabled
+                id="filterCharacteristicName" placeholder="...">
+            <div class="invalid-tooltip">
+                Не оставляйте это поле пустым при выбранном параметре!
+            </div>
+        </div>
+        <div class="col-2">
+            <label for="filterCategoriesSelect" class="form-label flex-left">Катергория:</label>
+            <select asp-items="@ViewBag.CategoriesList" id="filterCategoriesSelect" 
+                class="form-select" aria-label="Default select example">
+                <option value="NoSelect" selected>Не выбран</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <label for="filterButton" class="form-label flex-left">&nbsp;</label>
+            <div class="flex-right" id="filterButton">
+                <a class="btn btn-outline-primary" style="margin-right: 2.5px;"
+                    onclick="makeFilter();">
+                    <i class="bi bi-sliders"></i>
+                    Применить
+                </a>
+                <a class="btn btn-outline-secondary"
+                    style="margin-left: 2.5px;">
+                    <i class="bi bi-stars"></i>
+                    Сбросить
+                </a>
+            </div>
+
+            <!--<a href="#" class="btn btn-outline-primary btn-circle" style="padding: 0; height: 30px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" 
+                    fill="currentColor" class="bi bi-filter-circle" aria-label="Применить"
+                    viewBox="0 0 16 16" style="padding: 0; margin-top: 1.2px; margin-left: 0.5px;">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                    <path d="M7 11.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 0 1h-1a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm-2-3a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5z"></path>
+                </svg>
+            </a>-->
+        </div>
+    </div>
 
     <div class="block-container row">
         @foreach (var productModel in Model.productList)
@@ -89,6 +155,54 @@
 
     function removeHash () { 
         history.pushState("", document.title, window.location.pathname + window.location.search);
+    }
+
+    function showHideFilters () {
+        var filters = document.getElementById("filters");
+        var openCloseFilterButton = document.getElementById("openCloseFilterButton");
+        if (filters.hidden == true) {
+            filters.hidden = false;
+            openCloseFilterButton.classList.add("btn-warning");
+            openCloseFilterButton.classList.remove("btn-outline-primary");
+        } else {
+            filters.hidden = true;
+            openCloseFilterButton.classList.add("btn-outline-primary");
+            openCloseFilterButton.classList.remove("btn-warning");
+        }
+    }
+
+    function validFilterParameters () {
+        // Проверка корректности заполнения параметра
+        var filterCharacteristicName = document.getElementById("filterCharacteristicName");
+        if (document.getElementById("filterCharacteristicSelect").value !== 'NoSelect' &&
+            (filterCharacteristicName.value == null 
+                || filterCharacteristicName.value == undefined 
+                || filterCharacteristicName.value == "")) {
+
+            filterCharacteristicName.classList.add("is-invalid");
+            filterCharacteristicName.disabled = false;
+            return false;
+        } else {
+            filterCharacteristicName.classList.remove("is-invalid");
+
+            if (document.getElementById("filterCharacteristicSelect").value === 'NoSelect') {
+                filterCharacteristicName.value = "";
+                filterCharacteristicName.disabled = true;
+            }
+
+            return true;
+        }
+    }
+    
+    function makeFilter () {
+        if (!validFilterParameters ()) {
+            return;
+        }
+
+        var filterBrandSelectId = document.getElementById("filterBrandSelect").value;
+        
+
+        console.log(document.getElementById("filterCharacteristicSelect").value);
     }
   </script>
 }

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using dotnet_mvc.Models.DataModels;
 
 namespace dotnet_mvc.Models.HelpModels
 {
   public class ProductListModel
-    {
-        public IEnumerable<dotnet_mvc.Models.DataModels.ProductModel> productList { get; set; }
-    }
+  {
+      public IEnumerable<ProductModel> productList { get; set; }
+  }
 }

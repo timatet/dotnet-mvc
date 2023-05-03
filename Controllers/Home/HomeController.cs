@@ -1,4 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using dotnet_mvc.Models;
@@ -6,6 +9,10 @@ using Microsoft.Extensions.Configuration;
 using dotnet_mvc.Models.DataModels;
 using dotnet_mvc.Models.HelpModels;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using dotnet_mvc.Models.Auxiliary;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace dotnet_mvc.Controllers
 {
@@ -37,6 +44,23 @@ namespace dotnet_mvc.Controllers
 
             string webRootPath = _webHostEnvironment.WebRootPath;
             ViewData["WebRootPath"] = webRootPath;
+
+            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
+            ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
+            var categoryEnumList = Enum
+                .GetValues(typeof(CategoryEnum))
+                .Cast<CategoryEnum>()
+                .Select(
+                    p => new KeyValuePair<string, string>(
+                        p.ToString(),
+                        p.GetType()
+                        .GetMember(p.ToString())
+                        .First()
+                        .GetCustomAttribute<DisplayAttribute>()
+                        ?.GetName()
+                    )
+                );
+            ViewData["CategoriesList"] = new SelectList(categoryEnumList, "Key", "Value");
 
             return View(productListModel);
         }

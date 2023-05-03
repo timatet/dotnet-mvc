@@ -22,8 +22,8 @@ namespace dotnet_mvc.Controllers.Product
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly ApplicationDbContext db;
         
-        const int ImageWidth = 300;
-        const int ImageHeight = 300;
+        const int ImageWidth = 1000;
+        const int ImageHeight = 1000;
 
         public ProductController(
             ILogger<ProductController> logger, 
@@ -66,7 +66,7 @@ namespace dotnet_mvc.Controllers.Product
         ) {
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
-            if (productBrand is null) {
+            if (productBrand == null) {
                 productBrand = db.Brands.Find(product.Brand.Id);
                 product.Brand = productBrand;
             } else {

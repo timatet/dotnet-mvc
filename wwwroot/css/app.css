@@ -443,3 +443,14 @@ iframe {
   font-weight: bold;
   margin-right: 10px;
 }
+
+.btn-circle {
+  
+  width: 30px;
+  height: 30px;
+
+  text-align: center;
+  padding: 6px 0;
+  line-height: 1.42;
+  border-radius: 15px;
+}
