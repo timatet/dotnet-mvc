@@ -200,9 +200,17 @@
         }
 
         var filterBrandSelectId = document.getElementById("filterBrandSelect").value;
-        
+        var filterCharacteristicSelect = document.getElementById("filterCharacteristicSelect").value;
+        var filterCharacteristicName = document.getElementById("filterCharacteristicName").value;
+        var filterCategoriesSelect = document.getElementById("filterCategoriesSelect").value;
 
-        console.log(document.getElementById("filterCharacteristicSelect").value);
+        url = "/Home";
+        url += "?filterBrandSelectId=" + filterBrandSelectId;
+        url += "&filterCharacteristicSelect=" + filterCharacteristicSelect;
+        url += "&filterCharacteristicName=" + filterCharacteristicName;
+        url += "&filterCategoriesSelect=" + filterCategoriesSelect;
+
+        window.location.replace(url);
     }
   </script>
 }
