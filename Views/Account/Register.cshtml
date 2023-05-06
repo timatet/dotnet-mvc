@@ -1,0 +1,68 @@
+@model dotnet_mvc.Models.HelpModels.RegisterModel;
+
+@{
+    ViewData["Title"] = "Account Page";
+}
+
+<div>
+    <div class="container auth-container">
+        <form method="post" asp-controller="Account" asp-action="Register" 
+            class="row g-3" style="margin-left: 15%; margin-right: 15%;">
+            <div class="col-md-6">
+                <label for="accountMailAddress" class="form-label">Эл. адрес</label>
+                <input type="email" asp-for="Email" required
+                    class="form-control" id="accountMailAddress">
+            </div>
+            <div class="col-md-6">
+                <label for="accountLogin" class="form-label">Логин</label>
+                <input type="text" asp-for="Login" required
+                    class="form-control" id="accountLogin">
+            </div>
+
+            <div class="col-md-6">
+                <label for="accountFullName" class="form-label">ФИО</label>
+                <input type="text" asp-for="FullName" required
+                    class="form-control" id="accountFullName">
+            </div>
+            <div class="col-md-6">
+                <label for="accountBirthdayDate" class="form-label">Дата рождения</label>
+                <input type="date" asp-for="BirthdayDate" required
+                    class="form-control" id="accountBirthdayDate">
+            </div>
+
+            <div class="col-md-6">
+                <label for="accountPassword" class="form-label">Пароль</label>
+                <input type="password" asp-for="Password" required
+                    class="form-control" id="accountPassword">
+            </div>
+            <div class="col-md-6">
+                <label for="accountPasswordCommit" class="form-label">Подтвердите пароль</label>
+                <input type="password" asp-for="PasswordCommit" required
+                    class="form-control" id="accountPasswordCommit">
+            </div>
+
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" asp-for="PrivatePolicyCheck"
+                        type="checkbox" id="accountPrivatePolicyCheck" required>
+                    <label class="form-check-label" for="accountPrivatePolicyCheck">
+                        Я прочитал политику безопасности и согласен с условиями
+                    </label>
+                </div>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Создать аккаунт</button>
+            </div>
+        </form>
+
+        @section Scripts {
+            <script type="text/javascript">
+                @if (ViewBag.RegisterErrorMsg != null)
+                {   
+                    @:toastr.error("@ViewBag.RegisterErrorMsg", "Ошибка!")
+                }
+            </script>
+        }
+
+    </div>
+</div>

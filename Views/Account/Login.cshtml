@@ -1,0 +1,67 @@
+@model dotnet_mvc.Models.HelpModels.LoginModel;
+
+@{
+    ViewData["Title"] = "Account Page";
+}
+
+<div>
+    <div class="container auth-container">
+        <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnUrl="@Model.ReturnUrl">
+            <h3 class="authform-header">Авторизация</h3>
+            <div class="padding-8080">
+                <label class="col-form-label text-secondary">Логин/почта</label>
+                <div class="position-relative">
+                    <i  class="bi bi-person-circle position-absolute text-secondary" 
+                        style="font-size: 24px; padding: 2px 7px 2px 7px;"></i>
+                    <input class="form-control" style="padding-left: 35px" asp-for="EmailOrUserName"
+                        required type="text" placeholder="Введите логин" />
+                </div>
+            </div>
+            <div class="padding-8080">
+                <label class="col-form-label text-secondary">Пароль</label>
+                <div class="position-relative" >
+                    <i class="bi bi-shield-lock position-absolute text-secondary text-center" 
+                        style="font-size: 24px; padding: 2px 7px 2px 7px;"></i>
+                    <input class="form-control" style="padding-left: 35px" asp-for="Password"
+                        required type="password" placeholder="Введите пароль" />
+                </div>
+            </div>
+            <div class="padding-8080">
+                <!--<div class="alert alert-success shadow d-flex justify-content-center align-items-center" style="padding: 4px;" role="alert">
+                    <i class="bi bi-emoji-laughing" style="margin-right: 8px; font-size: 24px;"></i>
+                    <div>
+                        Вы уже авторизованы
+                    </div>
+                </div>
+                <div class="alert alert-danger shadow d-flex justify-content-center align-items-center" style="padding: 4px;" role="alert">
+                    <i class="bi bi-cloud-lightning-rain" style="margin-right: 8px; font-size: 24px;"></i>
+                    <div>
+                        Ошибка авторизации
+                    </div>
+                </div>-->
+                <div class="form-check">
+                    <input class="form-check-input" asp-for="RememberMe"
+                        type="checkbox" id="rememberMeCheck">
+                    <label class="form-check-label" for="rememberMeCheck">
+                        Запомнить меня
+                    </label>
+                </div>
+
+                <button class="btn btn-outline-primary form-control" 
+                    style="margin-top: 15px; margin-bottom: 5px;" type="submit">Войти</button>
+                <a asp-controller="Account" asp-action="Register" asp-route-returnUrl="@Model.ReturnUrl" 
+                    class="btn btn-outline-dark form-control" style="margin-top: 5px;">Регистрация</a>
+            </div>
+        </form>
+
+        @section Scripts {
+            <script type="text/javascript">
+                @if (ViewBag.LoginErrorMsg != null)
+                {   
+                    @:toastr.error("@ViewBag.LoginErrorMsg", "Ошибка!")
+                }
+            </script>
+        }
+
+    </div>
+</div>

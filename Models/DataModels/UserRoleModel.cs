@@ -5,10 +5,8 @@ using Microsoft.AspNetCore.Identity;
 
 namespace dotnet_mvc.Models.DataModels
 {
-  public class UserModel : IdentityUser<Guid>
+  public class UserRoleModel : IdentityRole<Guid>
   {
-      public string FullName { get; set; }
-      public DateTime BirthdayDate { get; set; }
-      public bool IsAdmin { get; set; }
+
   }
 }

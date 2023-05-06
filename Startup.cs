@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Http;
 using dotnet_mvc.Models.DataModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Identity;
+using dotnet_mvc.Models.Auxiliary;
+using dotnet_mvc.Helpers;
 
 namespace dotnet_mvc
 {
@@ -38,6 +41,18 @@ namespace dotnet_mvc
             {
                 options.AllowSynchronousIO = true;
             });
+
+            services.AddIdentity<UserModel, UserRoleModel>(opts =>
+                {
+                    opts.User.RequireUniqueEmail = true;
+                    opts.Password.RequiredLength = 6;
+                    opts.Password.RequireDigit = true;
+                    opts.Password.RequireNonAlphanumeric = false;
+                    opts.Password.RequireLowercase = true;
+                }
+            ).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddErrorDescriber<MultilanguageIdentityErrorDescriber>()
+            .AddDefaultTokenProviders();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,10 +60,10 @@ namespace dotnet_mvc
         {
             dbContext.Database.Migrate();
 
-            if (!dbContext.Users.ToList().Exists(user => user.NickName == "admin")) {
+            if (!dbContext.Users.ToList().Exists(user => user.UserName == "admin")) {
                 dbContext.Users.Add(
                     new UserModel() {
-                        NickName = "admin",
+                        UserName = "admin",
                         FullName = "Administratior",
                         IsAdmin = true
                     }

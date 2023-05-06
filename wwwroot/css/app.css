@@ -45,11 +45,6 @@
   padding-right: 35px; 
 }
 
- /* Disabled svg button */
-.disabled-click {
-  pointer-events: none;
-}
-
 .disabled-primary {
   fill: #A28DF6;
 }
@@ -301,6 +296,11 @@ p {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+ /* Disabled svg button */
+.noclick {
+  pointer-events: none;
+}
+
 .wordBreak {
   overflow-wrap: break-word;  /* не поддерживает IE, Firefox; является копией word-wrap */ 
   word-wrap: break-word;
@@ -410,8 +410,13 @@ iframe {
   height: 100%;
   object-fit: cover;
 }
+
 .img-border-circle {
   border-radius: 5%;
+}
+
+.img-circle {
+  border-radius: 50%;
 }
 
 .img-shadow {
@@ -453,4 +458,8 @@ iframe {
   padding: 6px 0;
   line-height: 1.42;
   border-radius: 15px;
+}
+
+.left-menu {
+  margin-right: 0px;
 }

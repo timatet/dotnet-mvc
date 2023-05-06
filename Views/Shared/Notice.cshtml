@@ -1,0 +1,17 @@
+@model dotnet_mvc.Models.HelpModels.NoticeModel;
+
+@{
+    ViewData["Title"] = @Model.MessageHeader;
+}
+
+<div style="text-align: center; margin-top: 128px;">
+    <img src='@Url.Content("~/notices/")@Model.GetNoticeValue()' 
+        class="noclick noselect" style="aspect-ratio: 1/1;" width="256px" alt="...">
+    <h2>@Model.MessageHeader</h2>
+    <p>@Model.MessageDescription</p>
+
+    <a asp-action="Index" asp-controller="Home" 
+        class="btn btn-primary btn-lg" style="margin-top: 30px;">
+        На главную
+    </a>
+</div>

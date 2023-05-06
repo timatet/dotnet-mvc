@@ -1,76 +1,136 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - магазин</title>
-    <link rel="stylesheet" href="~/vendor/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/app.css" />
-    <link rel="stylesheet" href="~/vendor/toastr/build/toastr.css" />
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>@ViewData["Title"] - магазин</title>
+        <link rel="stylesheet" href="~/vendor/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/app.css" />
+        <link rel="stylesheet" href="~/vendor/toastr/build/toastr.css" />
 
-    <link rel="stylesheet" href="~/vendor/bootstrap-icons/font/bootstrap-icons.css" />
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Магазин</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
-                        </li>
-                        <!--<li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
-                        </li>-->
-                    </ul>
+        <link rel="stylesheet" href="~/vendor/bootstrap-icons/font/bootstrap-icons.css" />
+    </head>
+    <body>
+        <header>
+            <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+                <div class="container">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Магазин</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav">
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
+                            </li>
+                        </ul>
+                    </div>
+                    @using Microsoft.AspNetCore.Identity
+                    @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
+                    @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
+
+                    @{
+                        if (SignInManager.IsSignedIn(User))
+                        {
+                            <ul class="nav navbar-nav left-menu">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" 
+                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        @UserManager.GetUserName(User)
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                        <li>
+                                            <a asp-controller="Order" asp-action="PurchaseHistory"
+                                                asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Покупки</a>
+                                        </li>
+                                        <li>
+                                            <a asp-controller="Account" asp-action="ChangePassword"
+                                                asp-route-name="@UserManager.GetUserName(User)" class="dropdown-item">Смена пароля</a>
+                                        </li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li>
+                                            <a href="#" onclick="logout();" class="dropdown-item">Выход</a>
+                                        </li>                                    
+                                    </ul>
+                                </li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <ul class="nav navbar-nav left-menu">
+                                <li class="nav-item">
+                                    <a asp-controller="Account" asp-action="Register" class="nav-link text-dark">Регистрация</a>
+                                </li>
+                                <li class="nav-item">
+                                    <span>
+                                        <a asp-controller="Account" asp-action="Login" class="nav-link text-dark">Вход</a>
+                                    </span>
+                                </li>
+                            </ul>
+                        }
+                    }
                 </div>
-            </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
-
-    <footer class="border-top footer text-muted">
+            </nav>
+        </header>
         <div class="container">
-            &copy; 2023 - dotnet_mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
         </div>
-    </footer>
 
-    <script src="~/vendor/jquery/dist/jquery.min.js"></script>
-    <script src="~/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/vendor/toastr/build/toastr.min.js"></script>
-    <script src="~/vendor/axios/dist/axios.min.js"></script>
+        <footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 2023 - dotnet_mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
+            </div>
+        </footer>
 
-    <script>
-        toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": true,
-            "positionClass": "toast-bottom-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        }
-    </script>
+        <script src="~/vendor/jquery/dist/jquery.min.js"></script>
+        <script src="~/vendor/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/vendor/toastr/build/toastr.min.js"></script>
+        <script src="~/vendor/axios/dist/axios.min.js"></script>
 
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
+        <script>
+            toastr.options = {
+                "closeButton": false,
+                "debug": false,
+                "newestOnTop": false,
+                "progressBar": true,
+                "positionClass": "toast-bottom-right",
+                "preventDuplicates": false,
+                "onclick": null,
+                "showDuration": "300",
+                "hideDuration": "1000",
+                "timeOut": "5000",
+                "extendedTimeOut": "1000",
+                "showEasing": "swing",
+                "hideEasing": "linear",
+                "showMethod": "fadeIn",
+                "hideMethod": "fadeOut"
+            }
+        </script>
+
+        @await RenderSectionAsync("Scripts", required: false)
+    </body>
 </html>
+
+<script>
+    function logout() {
+        axios.post('/Account/Logout', {})
+        .then(function (response) {
+            if (response.data == "success") {
+                window.location.href = '/Home/Index';
+            } else {
+                window.location.href = '/Error';
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+</script>

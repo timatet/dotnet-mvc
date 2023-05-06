@@ -59,9 +59,6 @@ namespace dotnet_mvc.Controllers
             string webRootPath = _webHostEnvironment.WebRootPath;
             ViewData["WebRootPath"] = webRootPath;
 
-            // TODO: Проверка предлагаемых свойств для фильтрации.
-            //  Если свойство есть, то выделить selected его параметр в списках
-            //  Индикатор на кнопке что хотя бы один фильтр применен  
             ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", db.Brands.FirstOrDefault(b => b.Id == filterBrandSelectId)?.Id);
 
             var CharacteristicListAttributes = ProductCharacteristic.GetAttributesNames();
@@ -124,6 +121,18 @@ namespace dotnet_mvc.Controllers
 
             var masterPredicate = PredicateMaster.And(predicateList.ToArray());
             return productList.Where(x => masterPredicate(x));
+        }
+
+        public IActionResult Notice() 
+        {
+            NoticeModel noticeModel = new NoticeModel(
+                NoticeType.WaitTime,
+                "Завершение регистрации",
+                "Для завершения регистрации проверьте электронную почту " +
+                    "и пройдите по ссылке,указанной в письме"
+            );
+
+            return View("Notice", noticeModel);
         }
 
         public IActionResult Privacy()
