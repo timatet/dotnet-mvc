@@ -40,7 +40,7 @@
         </div>
     }
 
-    <div class="block-container row" id="filters" onchange="validFilterParameters();" hidden>
+    <div class="block-container row" id="filters" onchange="validFilterParameters();" hidden="@ViewBag.filterHidden">
         <div class="flex-left">
             <h2 class="Inter-SemiBold">Фильтры:</h2>
         </div>
@@ -61,7 +61,7 @@
         </div>
         <div class="col-2 position-relative">
             <label for="filterCharacteristicName" class="form-label flex-left">Значение</label>
-            <input type="text" class="form-control" disabled
+            <input type="text" class="form-control" disabled="@ViewBag.CharacteristicDisabled" value="@ViewBag.CharacteristicName"
                 id="filterCharacteristicName" placeholder="...">
             <div class="invalid-tooltip">
                 Не оставляйте это поле пустым при выбранном параметре!
@@ -82,8 +82,8 @@
                     <i class="bi bi-sliders"></i>
                     Применить
                 </a>
-                <a class="btn btn-outline-secondary"
-                    style="margin-left: 2.5px;">
+                <a class="btn btn-outline-secondary" style="margin-left: 2.5px;"
+                    asp-action="Index" asp-controller="Home">
                     <i class="bi bi-stars"></i>
                     Сбросить
                 </a>
@@ -204,11 +204,12 @@
         var filterCharacteristicName = document.getElementById("filterCharacteristicName").value;
         var filterCategoriesSelect = document.getElementById("filterCategoriesSelect").value;
 
-        url = "/Home";
-        url += "?filterBrandSelectId=" + filterBrandSelectId;
-        url += "&filterCharacteristicSelect=" + filterCharacteristicSelect;
-        url += "&filterCharacteristicName=" + filterCharacteristicName;
-        url += "&filterCategoriesSelect=" + filterCategoriesSelect;
+        url = "/Home?";
+        if (filterBrandSelectId != -1) url += "&filterBrandSelectId=" + filterBrandSelectId;
+        if (filterCharacteristicSelect !== "NoSelect") url += "&filterCharacteristicSelect=" + filterCharacteristicSelect;
+        if (filterCharacteristicName !== "" && filterCharacteristicName != undefined && filterCharacteristicName != null) 
+            url += "&filterCharacteristicName=" + filterCharacteristicName;
+        if (filterCategoriesSelect !== "NoSelect") url += "&filterCategoriesSelect=" + filterCategoriesSelect;
 
         window.location.replace(url);
     }

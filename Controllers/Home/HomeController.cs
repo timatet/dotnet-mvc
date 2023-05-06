@@ -62,8 +62,13 @@ namespace dotnet_mvc.Controllers
             // TODO: Проверка предлагаемых свойств для фильтрации.
             //  Если свойство есть, то выделить selected его параметр в списках
             //  Индикатор на кнопке что хотя бы один фильтр применен  
-            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
-            ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
+            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", db.Brands.FirstOrDefault(b => b.Id == filterBrandSelectId)?.Id);
+
+            var CharacteristicListAttributes = ProductCharacteristic.GetAttributesNames();
+            ViewData["CharacteristicList"] = new SelectList(CharacteristicListAttributes, "ShortName", "Name", 
+                CharacteristicListAttributes.FirstOrDefault(c => c.ShortName == filterCharacteristicSelect)?.ShortName);
+            ViewData["CharacteristicDisabled"] = filterCharacteristicSelect == "NoSelect" ? true : false;
+            ViewData["CharacteristicName"] = filterCharacteristicName;
             var categoryEnumList = Enum
                 .GetValues(typeof(CategoryEnum))
                 .Cast<CategoryEnum>()
@@ -77,7 +82,15 @@ namespace dotnet_mvc.Controllers
                         ?.GetName()
                     )
                 );
-            ViewData["CategoriesList"] = new SelectList(categoryEnumList, "Key", "Value");
+            ViewData["CategoriesList"] = new SelectList(categoryEnumList, "Key", "Value", 
+                categoryEnumList.FirstOrDefault(c => c.Key == filterCategoriesSelect).Key);
+
+            bool filterHidden = true;
+            if (filterBrandSelectId != -1 || filterCharacteristicSelect != "NoSelect" 
+                || filterCharacteristicName != "" || filterCategoriesSelect != "NoSelect") {
+                filterHidden = false;
+            }
+            ViewData["filterHidden"] = filterHidden;
 
             return View(productListModel);
         }
