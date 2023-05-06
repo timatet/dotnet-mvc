@@ -18,6 +18,10 @@ using Microsoft.AspNetCore.Identity;
 using dotnet_mvc.Models.Auxiliary;
 using dotnet_mvc.Helpers;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.Data.SqlClient;
+using System.Data;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace dotnet_mvc
 {
@@ -25,17 +29,17 @@ namespace dotnet_mvc
     {
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        public IConfiguration _configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"))
+                options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
             );
 
             services.Configure<KestrelServerOptions>(options =>
@@ -56,11 +60,50 @@ namespace dotnet_mvc
             .AddDefaultTokenProviders();
         }
 
-        public static async Task Initialize(
+        public async Task Initialize(
             ApplicationDbContext applicationDbContext, 
             UserManager<UserModel> userManager, 
             RoleManager<UserRoleModel> roleManager
         ){
+
+            /* Очень временная мера */
+            /************************************************************************/
+
+            string connection_string = _configuration.GetConnectionString("DefaultConnection");
+
+            SqlConnection sqlConnection = new SqlConnection(connection_string);
+            sqlConnection.Open();
+
+            List<string> tables = new List<string>();
+            DataTable dt = sqlConnection.GetSchema("Tables");
+            foreach (DataRow row in dt.Rows)
+            {
+                string tablename = (string)row[2];
+                tables.Add(tablename);
+            }
+           
+            while (tables.Count != 1) {
+                foreach (var table in tables) {
+                    try { 
+                        SqlCommand testSqlCommand = new SqlCommand(String.Format("DROP TABLE [{0}]", table), sqlConnection);
+                        testSqlCommand.ExecuteNonQuery();
+                        tables.Remove(table);
+                        break;
+                    } catch {
+                        if (tables.Count == 1) {
+                            break;
+                        }
+                        continue;
+                    }
+                }
+            }
+
+            RelationalDatabaseCreator databaseCreator =
+                (RelationalDatabaseCreator) applicationDbContext.Database.GetService<IDatabaseCreator>();
+            databaseCreator.CreateTables();
+
+            /************************************************************************/
+
             applicationDbContext.Database.Migrate();
 
             // Create roles
