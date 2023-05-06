@@ -307,7 +307,7 @@ p {
   word-break: break-all;  /* не поддерживает Opera12.14, значение keep-all не поддерживается IE, Chrome */ 
   line-break: auto;  /* нет поддержки для русского языка */ 
   hyphens: manual;  /* значение auto не поддерживается Chrome */ 
-  width: 50%;
+  width: 100%;
 }
 
 /* Quick interface color change */
