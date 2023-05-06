@@ -66,44 +66,6 @@ namespace dotnet_mvc
             RoleManager<UserRoleModel> roleManager
         ){
 
-            /* Очень временная мера */
-            /************************************************************************/
-
-            string connection_string = _configuration.GetConnectionString("DefaultConnection");
-
-            SqlConnection sqlConnection = new SqlConnection(connection_string);
-            sqlConnection.Open();
-
-            List<string> tables = new List<string>();
-            DataTable dt = sqlConnection.GetSchema("Tables");
-            foreach (DataRow row in dt.Rows)
-            {
-                string tablename = (string)row[2];
-                tables.Add(tablename);
-            }
-           
-            while (tables.Count != 1) {
-                foreach (var table in tables) {
-                    try { 
-                        SqlCommand testSqlCommand = new SqlCommand(String.Format("DROP TABLE [{0}]", table), sqlConnection);
-                        testSqlCommand.ExecuteNonQuery();
-                        tables.Remove(table);
-                        break;
-                    } catch {
-                        if (tables.Count == 1) {
-                            break;
-                        }
-                        continue;
-                    }
-                }
-            }
-
-            RelationalDatabaseCreator databaseCreator =
-                (RelationalDatabaseCreator) applicationDbContext.Database.GetService<IDatabaseCreator>();
-            databaseCreator.CreateTables();
-
-            /************************************************************************/
-
             applicationDbContext.Database.Migrate();
 
             // Create roles
