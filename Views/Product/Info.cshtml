@@ -4,21 +4,30 @@
     ViewData["Title"] = "Product page";
 }
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
+@inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
+
 <div class="text-center">
     <div class="block-container flex-space-between">
         <div class="flex-left">
-            <a type="button" class="btn btn-outline-primary"
-                asp-action="Edit" asp-route-id="@Model.Id"
-                style="margin-right: 2.5px;">
-                <i class="bi bi-pencil-square"></i>
-                Редактировать товар
-            </a>
-            <a type="button" class="btn btn-outline-primary"
-                data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                style="margin-left: 2.5px;">
-                <i class="bi bi-folder-minus"></i>
-                Удалить товар
-            </a>
+            @{
+                if (SignInManager.IsSignedIn(User) && @UserManager.GetUserAsync(User).Result.IsAdmin)
+                {   
+                    <a type="button" class="btn btn-outline-primary"
+                        asp-action="Edit" asp-route-id="@Model.Id"
+                        style="margin-right: 2.5px;">
+                        <i class="bi bi-pencil-square"></i>
+                        Редактировать товар
+                    </a>
+                    <a type="button" class="btn btn-outline-primary"
+                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        style="margin-left: 2.5px;">
+                        <i class="bi bi-folder-minus"></i>
+                        Удалить товар
+                    </a>
+                }
+            }
         </div>
         <div class="flex-right">
             <a asp-controller="Account" asp-action="Basket" 

@@ -25,11 +25,17 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
-                            </li>
+                            @{
+                                if (SignInManager.IsSignedIn(User))
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
+                                    </li>
+                                }
+                            }
                         </ul>
                     </div>
+
                     @using Microsoft.AspNetCore.Identity
                     @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
                     @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager

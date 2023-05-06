@@ -4,6 +4,10 @@
     ViewData["Title"] = "Home Page";
 }
 
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
+@inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
+
 <div class="text-center">
     <div class="alert alert-primary" role="alert">
         Данный сайт не осуществляет никаких продаж! Используется исключительно в учебных целях - 
@@ -14,10 +18,15 @@
 
     <div class="block-container flex-space-between">
         <div class="flex-left">
-            <a asp-controller="Product" asp-action="New" class="btn btn-outline-primary">
-                <i class="bi bi-folder-plus"></i>
-                Добавить товар
-            </a>
+            @{
+                if (SignInManager.IsSignedIn(User) && @UserManager.GetUserAsync(User).Result.IsAdmin)
+                {  
+                    <a asp-controller="Product" asp-action="New" class="btn btn-outline-primary">
+                        <i class="bi bi-folder-plus"></i>
+                        Добавить товар
+                    </a>
+                }
+            }
         </div>
         <div class="flex-right">
             <a class="btn btn-outline-primary" style="margin-right: 2.5px;"
