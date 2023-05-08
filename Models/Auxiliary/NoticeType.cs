@@ -8,7 +8,9 @@ namespace dotnet_mvc.Models.Auxiliary
     {
         Default,
         WaitTime,
-        DrizzleError
+        DrizzleError,
+        AccessError,
+        IsAuthorized
     }
 
     public static class NoticeTypeExtensions
@@ -23,6 +25,10 @@ namespace dotnet_mvc.Models.Auxiliary
                     return "waittime.gif";
                 case NoticeType.DrizzleError:
                     return "drizzle.gif";
+                case NoticeType.AccessError:
+                    return "storm.gif";
+                case NoticeType.IsAuthorized:
+                    return "isauth.gif";
                 default:
                     return "None";
             }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,8 @@ using SixLabors.ImageSharp.Processing;
 using Newtonsoft.Json;
 using System.Collections;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
+using dotnet_mvc.Models.HelpModels;
 
 namespace dotnet_mvc.Controllers.Product
 {
@@ -20,6 +23,8 @@ namespace dotnet_mvc.Controllers.Product
     {
         private readonly ILogger<ProductController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<UserModel> _userManager;
+        private readonly SignInManager<UserModel> _signInManager;
         private readonly ApplicationDbContext db;
         
         const int ImageWidth = 1000;
@@ -28,14 +33,20 @@ namespace dotnet_mvc.Controllers.Product
         public ProductController(
             ILogger<ProductController> logger, 
             ApplicationDbContext applicationDbContext, 
-            IWebHostEnvironment webHostEnvironment)
-        {
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<UserModel> userManager,
+            SignInManager<UserModel> signInManager
+        ){
             _logger = logger;
             db = applicationDbContext;
             _webHostEnvironment = webHostEnvironment;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
+        [HttpGet]
         public IActionResult Info(int? id) {
+        
             if (id == null) {
                 return NotFound();
             }
@@ -51,7 +62,15 @@ namespace dotnet_mvc.Controllers.Product
             return View(product);
         }
 
+        [HttpGet]
         public IActionResult New() {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
+            if (!userIsSignedIn || !userIsAdmin) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+            
             ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
             ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
 
@@ -64,6 +83,13 @@ namespace dotnet_mvc.Controllers.Product
             IFormFile upload,
             List<string> productCharacteristicList
         ) {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
+            if (!userIsSignedIn || !userIsAdmin) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
             if (productBrand == null) {
@@ -115,6 +141,13 @@ namespace dotnet_mvc.Controllers.Product
             IFormFile upload,
             List<string> productCharacteristicList
         ) {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
+            if (!userIsSignedIn || !userIsAdmin) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
             // Сохраняем изображение товара если было загружено новое
             if(upload != null)
             {
@@ -158,6 +191,13 @@ namespace dotnet_mvc.Controllers.Product
         [HttpGet]
         public IActionResult Edit(int? id)
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
+            if (!userIsSignedIn || !userIsAdmin) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
             if (id == null)
                 return NotFound();
 
@@ -186,6 +226,12 @@ namespace dotnet_mvc.Controllers.Product
         [HttpPost]
         public bool Delete()
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
+            if (!userIsSignedIn || !userIsAdmin) { 
+                return false;
+            }
+
             Dictionary<string, object> response = new Dictionary<string, object>();
 
             // Чтение данных передаваемых в POST запросе

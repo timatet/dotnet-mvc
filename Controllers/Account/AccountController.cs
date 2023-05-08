@@ -39,6 +39,18 @@ namespace dotnet_mvc.Controllers
         [HttpGet]
         public IActionResult Login(string returnUrl = null)
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            if (userIsSignedIn) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", 
+                    new NoticeModel(
+                        NoticeType.IsAuthorized,
+                        "Вы уже авторизованы!",
+                        "У вас не получится авторизоваться повторно."
+                    )
+                );
+            }
+
             return View(
                 new LoginModel { 
                     ReturnUrl = returnUrl 
@@ -50,6 +62,12 @@ namespace dotnet_mvc.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            if (userIsSignedIn) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
             if (ModelState.IsValid)
             {
                 UserModel userByEmailAttempt = await _userManager.FindByEmailAsync(loginModel.EmailOrUserName);
@@ -119,7 +137,7 @@ namespace dotnet_mvc.Controllers
 
         [HttpPost]
         public async Task<string> Logout()
-        {
+        {   
             try {
                 await _signInManager.SignOutAsync();
                 return "success";
@@ -131,12 +149,30 @@ namespace dotnet_mvc.Controllers
         [HttpGet]
         public IActionResult Register()
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            if (userIsSignedIn) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", 
+                    new NoticeModel(
+                        NoticeType.IsAuthorized,
+                        "Вы уже авторизованы!",
+                        "У вас не получится зарегистрироваться, когда вы уже вошли на сайт."
+                    )
+                );
+            }
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            if (userIsSignedIn) { 
+                // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
             if (ModelState.IsValid)
             {
                 UserModel user = new UserModel() { 
@@ -172,6 +208,7 @@ namespace dotnet_mvc.Controllers
                             "В настоящее время регистрация недоступна. Попробуйте пожалуйста позже!"
                         );
 
+                        return View("Notice", errorNotice);
                     }
 
                     NoticeModel noticeModel = new NoticeModel(
@@ -215,7 +252,7 @@ namespace dotnet_mvc.Controllers
         }
 
         public IActionResult Basket()
-        {
+        {   
             return View();
         }
 

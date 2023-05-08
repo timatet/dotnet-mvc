@@ -123,18 +123,6 @@ namespace dotnet_mvc.Controllers
             return productList.Where(x => masterPredicate(x));
         }
 
-        public IActionResult Notice() 
-        {
-            NoticeModel noticeModel = new NoticeModel(
-                NoticeType.WaitTime,
-                "Завершение регистрации",
-                "Для завершения регистрации проверьте электронную почту " +
-                    "и пройдите по ссылке,указанной в письме"
-            );
-
-            return View("Notice", noticeModel);
-        }
-
         public IActionResult Privacy()
         {
             return View();
