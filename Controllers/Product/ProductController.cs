@@ -16,6 +16,7 @@ using System.Collections;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using dotnet_mvc.Models.HelpModels;
+using dotnet_mvc.Helpers;
 
 namespace dotnet_mvc.Controllers.Product
 {

@@ -21,7 +21,7 @@
                         Редактировать товар
                     </a>
                     <a type="button" class="btn btn-outline-primary"
-                        data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        data-bs-toggle="modal" data-bs-target="#deleteProductModal"
                         style="margin-left: 2.5px;">
                         <i class="bi bi-folder-minus"></i>
                         Удалить товар
@@ -113,10 +113,11 @@
                 </div>
                 <div class="flex-space-between" style="position: absolute; bottom: 5%;">
                     <div class="flex-left">
-                        <a class="btn btn-outline-primary btn-lg">
+                        <button class="btn btn-outline-primary btn-lg"
+                            onclick="addProductToBasket();">
                             <i class="bi bi-cart-plus"></i>
                             В корзину
-                        </a>
+                        </button>
                     </div>
                     <div class="flex-right">
                         <a asp-action="Index" asp-controller="Home" 
@@ -132,7 +133,9 @@
    
 </div>
 
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+@* Удаление товара *@
+<div class="modal fade" id="deleteProductModal" data-bs-backdrop="static" 
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -150,6 +153,27 @@
   </div>
 </div>
 
+@* Добавление в корзину *@
+<div class="modal fade" id="addProductToBasketModal" data-bs-backdrop="static" 
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Товар добавлен в корзину</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <h2 class="Inter-ExtraBold">@Model.Name</h2>
+        <p>@Model.Description</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Остаться на странице</button>
+        <a asp-action="Index" asp-controller="Basket" type="button" class="btn btn-outline-primary">Перейти в корзину</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
     function postDeleteRequest() {
         axios.post('/Product/Delete', {
@@ -160,6 +184,24 @@
                 window.location.href = '/Home/Index#successDelete';
             } else {
                 window.location.href = '/Home/Index#errorDelete';
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
+
+    function addProductToBasket() {
+        axios.post('/Basket/AddProductToBasket', {
+            product_id: @Model.Id
+        })
+        .then(function (response) {
+            if (response.data == true) {
+                toastr.success('Продукт был добавлен в корзину.', 'Успех');
+                var addProductToBasketModal = new bootstrap.Modal(document.getElementById('addProductToBasketModal'));
+                addProductToBasketModal.show();
+            } else {
+                toastr.error('Продукт не был добавлен в корзину.', 'Ошибка');
             }
         })
         .catch(function (error) {

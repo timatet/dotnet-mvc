@@ -1,0 +1,105 @@
+@model dotnet_mvc.Models.HelpModels.BasketProductListModel
+
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="block-container flex-space-between">
+    <div class="flex-left">
+        
+    </div>
+    <div class="flex-right">
+        <a class="btn btn-outline-primary" style="margin-right: 2.5px;">
+            <i class="bi bi-filetype-pdf"></i>
+            Скачать
+        </a>
+        <a class="btn btn-outline-primary" style="margin-right: 2.5px; margin-left: 2.5px;">
+            <i class="bi bi-envelope-at"></i>
+            Отправить на почту
+        </a>
+        <a class="btn btn-outline-primary" style="margin-left: 2.5px;">
+            <i class="bi bi-cart-dash"></i>
+            Очистить
+        </a>
+    </div>
+</div>
+
+<div>
+    @if (Model.productList.Count() == 0) {
+        <div class="alert alert-primary" role="alert">
+            Вы еще не добавили ни одного товара в корзину. <br>
+            В нашем магазине <b>@ViewBag.ProductCountInShop товаров</b>, мы точно уверены, что хоть один подойдёт вам.
+        </div>
+    } else {
+        var productListCount =  @Model.productList.Count();
+
+        <div class="block-container row">
+            <table class="table">
+                <thead>
+                    <tr style="color: #7f7f7f; font-size: .9375rem;">
+                        <th scope="col" colspan="2">
+                            @productListCount @GetWordInCount(@productListCount, "товар", "товара", "товаров")
+                        </th>
+                        <th scope="col">Размер</th>
+                        <th scope="col">Цвет</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Стоимость</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            Мини фото
+                        </td>
+                        <td>
+                            Название
+                        </td>
+                        <td>
+                            Размер ...
+                        </td>
+                        <td>
+                            Цвет...
+                        </td>
+                        <td>
+                            5 штук
+                        </td>
+                        <td>
+                            цвфцв
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+</div>  
+
+@functions {
+
+    public string GetWordInCount(
+        int count, 
+        string one, 
+        string two, 
+        string five
+    ){
+        var n = Math.Abs(count);
+
+        n %= 100;
+        if (n >= 5 && n <= 20) {
+            return five;
+        }
+
+        n %= 10;
+        if (n == 1) {
+            return one;
+        }
+
+        if (n >= 2 && n <= 4) {
+            return two;
+        }
+
+        return five;
+    }
+
+}

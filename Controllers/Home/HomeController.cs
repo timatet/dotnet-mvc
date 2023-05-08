@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using dotnet_mvc.Helpers;
+using Microsoft.AspNetCore.Identity;
 
 namespace dotnet_mvc.Controllers
 {
@@ -22,21 +23,27 @@ namespace dotnet_mvc.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly UserManager<UserModel> _userManager;
+        private readonly SignInManager<UserModel> _signInManager;
         public IConfiguration _configuration { get; }
         
-        private readonly ApplicationDbContext db;
+        private readonly ApplicationDbContext _applicationDbContext;
 
         public HomeController(
             ILogger<HomeController> logger, 
             IConfiguration configuration, 
             ApplicationDbContext applicationDbContext, 
-            IWebHostEnvironment webHostEnvironment
+            IWebHostEnvironment webHostEnvironment,
+            UserManager<UserModel> userManager,
+            SignInManager<UserModel> signInManager
         )
         {
             _logger = logger;
             _configuration = configuration;
-            db = applicationDbContext;
+            _applicationDbContext = applicationDbContext;
             _webHostEnvironment = webHostEnvironment;
+            _signInManager = signInManager;
+            _userManager = userManager;
         } 
 
         [HttpGet]
@@ -49,7 +56,7 @@ namespace dotnet_mvc.Controllers
         {
             ProductListModel productListModel = new ProductListModel();
             productListModel.productList = doFilter(
-                db.Products.Include(p => p.ProductCharacteristic).Include(p => p.Brand),
+                _applicationDbContext.Products.Include(p => p.ProductCharacteristic).Include(p => p.Brand),
                 filterBrandSelectId,
                 filterCharacteristicSelect,
                 filterCharacteristicName,
@@ -59,7 +66,7 @@ namespace dotnet_mvc.Controllers
             string webRootPath = _webHostEnvironment.WebRootPath;
             ViewData["WebRootPath"] = webRootPath;
 
-            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", db.Brands.FirstOrDefault(b => b.Id == filterBrandSelectId)?.Id);
+            ViewData["BrandList"] = new SelectList(_applicationDbContext.Brands, "Id", "Name", _applicationDbContext.Brands.FirstOrDefault(b => b.Id == filterBrandSelectId)?.Id);
 
             var CharacteristicListAttributes = ProductCharacteristic.GetAttributesNames();
             ViewData["CharacteristicList"] = new SelectList(CharacteristicListAttributes, "ShortName", "Name", 

@@ -8,6 +8,8 @@
 @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
 @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
 
+@using Newtonsoft.Json
+
 <div class="text-center">
     <div class="alert alert-primary" role="alert">
         Данный сайт не осуществляет никаких продаж! Используется исключительно в учебных целях - 
@@ -34,7 +36,7 @@
                 <i class="bi bi-funnel"></i>
                 Фильтры
             </a>
-            <a asp-controller="Account" asp-action="Basket" 
+            <a asp-controller="Basket" asp-action="Index" 
                 class="btn btn-outline-primary" style="margin-left: 2.5px;">
                 <i class="bi bi-basket"></i>
                 Корзина
@@ -135,10 +137,10 @@
                                 <i class="bi bi-eye"></i>
                                 Открыть
                             </a>
-                            <a class="btn btn-primary">
+                            <button class="btn btn-primary" onclick="addProductToBasket(@(JsonConvert.SerializeObject(productModel)));">
                                 <i class="bi bi-cart-plus"></i>
                                 В корзину
-                            </a>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -147,9 +149,53 @@
     </div>
 </div>
 
+@* Добавление в корзину *@
+<div class="modal fade" id="addProductToBasketModal" data-bs-backdrop="static" 
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Товар добавлен в корзину</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <h2 class="Inter-ExtraBold" id="_modalProductName"></h2>
+        <p id="_modalProductdescription"></p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Остаться на странице</button>
+        <a asp-action="Index" asp-controller="Basket" type="button" class="btn btn-outline-primary">Перейти в корзину</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 @section Scripts {
   <script type="text/javascript">
     checkHashAfterRedirect();
+
+    function addProductToBasket(product) {
+        console.log(product.Id)
+        axios.post('/Basket/AddProductToBasket', {
+            product_id: product.Id
+        })
+        .then(function (response) {
+            if (response.data == true) {
+                toastr.success('Продукт был добавлен в корзину.', 'Успех');
+
+                document.getElementById("_modalProductName").innerHTML = product.Name;
+                document.getElementById("_modalProductdescription").innerHTML = product.Description;
+
+                var addProductToBasketModal = new bootstrap.Modal(document.getElementById('addProductToBasketModal'));
+                addProductToBasketModal.show();
+            } else {
+                toastr.error('Продукт не был добавлен в корзину.', 'Ошибка');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
     
     function checkHashAfterRedirect() {
         var windowHash = window.location.hash;
