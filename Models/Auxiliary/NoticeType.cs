@@ -10,7 +10,8 @@ namespace dotnet_mvc.Models.Auxiliary
         WaitTime,
         DrizzleError,
         AccessError,
-        IsAuthorized
+        IsAuthorized,
+        Error404
     }
 
     public static class NoticeTypeExtensions
@@ -29,6 +30,8 @@ namespace dotnet_mvc.Models.Auxiliary
                     return "storm.gif";
                 case NoticeType.IsAuthorized:
                     return "isauth.gif";
+                case NoticeType.Error404:
+                    return "warning.gif";
                 default:
                     return "None";
             }

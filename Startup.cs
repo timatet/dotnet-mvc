@@ -109,11 +109,12 @@ namespace dotnet_mvc
 
             if (webHostEnvironment.IsDevelopment())
             {
-                applicationBuilder.UseDeveloperExceptionPage();
+                //applicationBuilder.UseDeveloperExceptionPage();
+                applicationBuilder.UseStatusCodePagesWithRedirects("/Error/{0}");
             }
             else
             {
-                applicationBuilder.UseExceptionHandler("/Home/Error");
+                applicationBuilder.UseStatusCodePagesWithRedirects("/Error/{0}");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 applicationBuilder.UseHsts();
             }

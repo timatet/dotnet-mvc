@@ -248,11 +248,14 @@ namespace dotnet_mvc.Controllers
                 await _signInManager.SignInAsync(user, false);
                 return RedirectToAction("Index", "Home");
             }
+            
             return View("Error");
         }
 
         public IActionResult Basket()
         {   
+            
+
             return View();
         }
 
