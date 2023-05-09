@@ -463,3 +463,23 @@ iframe {
 .left-menu {
   margin-right: 0px;
 }
+
+.input-custom[type="number"] {
+	background-color: #eee;
+	vertical-align: middle;
+	outline: none;
+	padding: 0;
+	height: 25px;
+	line-height: 40px;    
+	text-indent: 10px;
+	display: inline-block;
+	width: 70px;
+	box-sizing: border-box;
+	border: 1px solid #ddd;
+	font-size: 14px;
+	border-radius: 3px;
+} 
+ 
+.input-custom[type="number"]:focus {
+	outline: 1px solid #7C4CF3; 
+}

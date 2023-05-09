@@ -36,6 +36,12 @@ namespace dotnet_mvc.Models.DataModels
         [Display(Name = "Мембрана", ShortName = "PresenceOfMembrane")]
         public string PresenceOfMembrane { get; set; }
 
+        [Display(Name = "Размер", ShortName = "Size")]
+        public string Size { get; set; }
+
+        [Display(Name = "Цвет", ShortName = "Color")]
+        public string Color { get; set; }
+
         public void SetFields(List<string> fieldNamesAndValues) 
         {
             foreach (string nameAndValue in fieldNamesAndValues) 
@@ -50,6 +56,8 @@ namespace dotnet_mvc.Models.DataModels
                     case "MoistureProtection": this.MoistureProtection = nameAndValueParsed[1]; break;
                     case "ImpactProtection": this.ImpactProtection = nameAndValueParsed[1]; break;
                     case "PresenceOfMembrane": this.PresenceOfMembrane = nameAndValueParsed[1]; break;
+                    case "Size": this.Size = nameAndValueParsed[1]; break;
+                    case "Color": this.Color = nameAndValueParsed[1]; break;
                 }
             }
         }

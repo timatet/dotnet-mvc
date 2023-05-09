@@ -96,6 +96,26 @@ namespace dotnet_mvc.Controllers
             }
             ViewData["filterHidden"] = filterHidden;
 
+            /*----------------------------------------------------------------------------*/
+
+            var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+            int TotalCount = 0;
+
+            foreach (var productKVP in basket) {
+                ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
+                TotalCount += productKVP.Value;
+            }
+
+            ViewData["TotalProduct"] = TotalCount;
+
+            if (TotalCount == 0) {
+                ViewData["TotalProductHidden"] = true;
+            } else {
+                ViewData["TotalProductHidden"] = false;
+            }
+
+            /*----------------------------------------------------------------------------*/
+
             return View(productListModel);
         }
         

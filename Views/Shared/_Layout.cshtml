@@ -15,13 +15,17 @@
         <header>
             <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
                 <div class="container">
-                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Магазин</a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
+                    <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                        <img src='@Url.Content("~/images/")logo.svg' width="24px" height="24xp" style="aspect-ratio: 1/1;" alt="...">
+                        Магазин
+                    </a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                        data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" 
+                        aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
-                    <div class="collapse navbar-collapse">
-                        <ul class="nav navbar-nav">
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                        <ul class="nav navbar-nav flex-left">
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                             </li>
@@ -34,52 +38,49 @@
                                 }
                             }
                         </ul>
-                    </div>
+                        @using Microsoft.AspNetCore.Identity
+                        @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
+                        @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
 
-                    @using Microsoft.AspNetCore.Identity
-                    @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
-                    @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
-
-                    @{
-                        if (SignInManager.IsSignedIn(User))
-                        {
-                            <ul class="nav navbar-nav left-menu">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" 
-                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        @UserManager.GetUserName(User)
-                                    </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                        <li>
-                                            <a asp-controller="Order" asp-action="PurchaseHistory"
-                                                asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Покупки</a>
-                                        </li>
-                                        <li>
-                                            <a asp-controller="Account" asp-action="ChangePassword"
-                                                asp-route-name="@UserManager.GetUserName(User)" class="dropdown-item">Смена пароля</a>
-                                        </li>
-                                        <li><hr class="dropdown-divider"></li>
-                                        <li>
-                                            <a href="#" onclick="logout();" class="dropdown-item">Выход</a>
-                                        </li>                                    
-                                    </ul>
-                                </li>
-                            </ul>
-                        }
-                        else
-                        {
-                            <ul class="nav navbar-nav left-menu">
-                                <li class="nav-item">
-                                    <a asp-controller="Account" asp-action="Register" class="nav-link text-dark">Регистрация</a>
-                                </li>
-                                <li class="nav-item">
-                                    <span>
+                        @{
+                            if (SignInManager.IsSignedIn(User))
+                            {
+                                <ul class="nav navbar-nav flex-right">
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" 
+                                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                            @UserManager.GetUserName(User)
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                            <li>
+                                                <a asp-controller="Order" asp-action="PurchaseHistory"
+                                                    asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Покупки</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="Account" asp-action="ChangePassword"
+                                                    asp-route-name="@UserManager.GetUserName(User)" class="dropdown-item">Смена пароля</a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
+                                                <a href="#" onclick="logout();" class="dropdown-item">Выход</a>
+                                            </li>                                    
+                                        </ul>
+                                    </li>
+                                </ul>
+                            }
+                            else
+                            {
+                                <ul class="nav navbar-nav flex-right">
+                                    <li class="nav-item">
+                                        <a asp-controller="Account" asp-action="Register" class="nav-link text-dark">Регистрация</a>
+                                    </li>
+                                    <li class="nav-item">
                                         <a asp-controller="Account" asp-action="Login" class="nav-link text-dark">Вход</a>
-                                    </span>
-                                </li>
-                            </ul>
+                                    </li>
+                                </ul>
+                            }
                         }
-                    }
+                    </div>
                 </div>
             </nav>
         </header>

@@ -8,6 +8,6 @@ namespace dotnet_mvc.Models.HelpModels
 {
     public class BasketProductListModel
     {
-        public IEnumerable<ProductModel> productList { get; set; }
+        public IDictionary<ProductModel, int> productList { get; set; }
     }
 }

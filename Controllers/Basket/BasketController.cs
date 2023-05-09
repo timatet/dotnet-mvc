@@ -16,6 +16,7 @@ using dotnet_mvc.Models.Auxiliary;
 using dotnet_mvc.Models.HelpModels;
 using dotnet_mvc.Helpers;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 
 namespace dotnet_mvc.Controllers.Basket
 {
@@ -39,6 +40,103 @@ namespace dotnet_mvc.Controllers.Basket
         }
 
         [HttpPost]
+        public bool RemoveItemFromBasket() {
+
+            Dictionary<string, object> request = new Dictionary<string, object>();
+
+            MemoryStream stream = new MemoryStream();
+            Request.Body.CopyTo(stream);
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string requestBody = reader.ReadToEnd();
+                if (requestBody.Length > 0)
+                {
+                    request = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
+                }
+            }
+
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            
+            if (!userIsSignedIn) {
+                try {
+                    int product_id = int.Parse(request["product_id"].ToString());
+
+                    BasketHelper.RemoveFromCookieBasket(product_id, Request, Response);
+
+                    return true;
+                } catch {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        [HttpGet]
+        public int GetBasketProductCount() {
+            var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+            int TotalCount = 0;
+
+            foreach (var productKVP in basket) {
+                ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
+                TotalCount += productKVP.Value;
+            }
+
+            return TotalCount;
+        }
+
+        [HttpGet]
+        public double GetBasketTotalCost() {
+
+            var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+            double TotalCost = 0;
+
+            foreach (var productKVP in basket) {
+                ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
+                TotalCost += product.Cost * productKVP.Value;
+            }
+
+            return TotalCost;
+        }
+
+        [HttpPost]
+        public bool ChangeProductCount() {
+
+            Dictionary<string, object> request = new Dictionary<string, object>();
+            Dictionary<string, object> response = new Dictionary<string, object>();
+
+            MemoryStream stream = new MemoryStream();
+            Request.Body.CopyTo(stream);
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string requestBody = reader.ReadToEnd();
+                if (requestBody.Length > 0)
+                {
+                    request = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
+                }
+            }
+
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            
+            if (!userIsSignedIn) {
+                try {
+                    int product_id = int.Parse(request["product_id"].ToString());
+                    int product_count = int.Parse(request["product_count"].ToString());
+
+                    BasketHelper.UpdateCount(product_id, product_count, Response, Request);
+
+                    return true;
+                } catch {
+                    return false;
+                }
+            }
+
+            return false;
+        }
+
+        [HttpPost]
         public bool AddProductToBasket() {
 
             Dictionary<string, object> response = new Dictionary<string, object>();
@@ -59,7 +157,9 @@ namespace dotnet_mvc.Controllers.Basket
             
             if (!userIsSignedIn) {
                 try {
-                    BasketHelper.AddToCookieBasket(int.Parse(response["product_id"].ToString()), Request, Response);
+                    int product_id = int.Parse(response["product_id"].ToString());
+                    ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == product_id);
+                    BasketHelper.AddToCookieBasket(product, Request, Response);
                     return true;
                 } catch {
                     return false;
@@ -76,21 +176,25 @@ namespace dotnet_mvc.Controllers.Basket
             BasketProductListModel basketProductListModel = new BasketProductListModel();
 
             if (!userIsSignedIn) {
-                List<int> basketFromCookie = BasketHelper.GetBasketFromCookie(Request, Response);
+
+                List<ProductModel> products = _applicationDbContext.Products.Include(p => p.ProductCharacteristic).ToList();
+                Dictionary<ProductModel, int> basketFromCookie = 
+                    BasketHelper.GetBasketFromCookie(Request, Response)
+                    .ToDictionary(kvp => products.Find(x => x.Id == kvp.Key), kvp => kvp.Value);
                
-                List<ProductModel> actualBasket = new List<ProductModel>();
-                foreach (int product_id in basketFromCookie) {
-                    ProductModel productModel = _applicationDbContext.Products.ToList().Find(p => p.Id == product_id);
+                Dictionary<ProductModel, int> actualBasket = new Dictionary<ProductModel, int>();
+                foreach (var product_kvp in basketFromCookie) {
+                    ProductModel productModel = _applicationDbContext.Products.ToList().Find(p => p.Id == product_kvp.Key.Id);
                     if (productModel != null) {
-                        actualBasket.Add(productModel);
+                        actualBasket.Add(productModel, product_kvp.Value);
                     }
                 }
 
                 basketProductListModel.productList = actualBasket;
 
-                BasketHelper.RestructureBasket(actualBasket.Select(p => p.Id).ToList(), Response, Request);
+                BasketHelper.RestructureBasket(actualBasket.ToDictionary(x => x.Key.Id, x => x.Value), Response, Request);
             } else {
-                basketProductListModel.productList = new List<ProductModel>();
+                basketProductListModel.productList = new Dictionary<ProductModel, int>();
             }
 
             ViewData["ProductCountInShop"] = _applicationDbContext.Products.Count();

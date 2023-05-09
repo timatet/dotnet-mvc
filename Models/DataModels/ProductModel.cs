@@ -26,5 +26,9 @@ namespace dotnet_mvc.Models.DataModels
 
         public string ImageUrl { get; set; }
 
+        public override int GetHashCode()
+        {
+            return Id;
+        }
     }
 }
