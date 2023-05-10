@@ -1,9 +1,5 @@
 # Dotnet MVC Project
 
-## Goals
-
-[]
-
 ## Technology Stack
 - Net5.0
 - NPM
