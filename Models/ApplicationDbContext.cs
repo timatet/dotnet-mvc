@@ -17,6 +17,8 @@ namespace dotnet_mvc.Models.DataModels
         public DbSet<ProductModel> Products { get; set; }
         public DbSet<BrandModel> Brands { get; set; }
         public DbSet<ProductCharacteristic> ProductCharacteristics { get; set; }
+        public DbSet<BasketModel> Baskets { get; set; }
+        public DbSet<BasketProductLinkModel> BasketProductLinks { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -33,6 +35,11 @@ namespace dotnet_mvc.Models.DataModels
                 entity.Property(e => e.UserName)
                     .IsRequired()
                     .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<BasketProductLinkModel>(entity =>
+            {
+                entity.HasKey(e => new { e.BasketId, e.ProductId });
             });
 
             // User	        Представляет пользователя.

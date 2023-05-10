@@ -1,0 +1,7 @@
+node_modules
+bin
+.vscode
+obj
+package-lock.json
+TODO
+readme.md

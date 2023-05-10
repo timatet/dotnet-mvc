@@ -72,7 +72,7 @@ namespace dotnet_mvc.Controllers.Product
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
             
-            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
+            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name");
             ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
 
             return View();
@@ -94,7 +94,7 @@ namespace dotnet_mvc.Controllers.Product
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
             if (productBrand == null) {
-                productBrand = db.Brands.Find(product.Brand.Id);
+                productBrand = db.Brands.Find(product.BrandId);
                 product.Brand = productBrand;
             } else {
                 db.Brands.Add(productBrand);

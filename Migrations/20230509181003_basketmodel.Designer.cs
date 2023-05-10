@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using dotnet_mvc.Models.DataModels;
 
 namespace dotnet_mvc.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230509181003_basketmodel")]
+    partial class basketmodel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,41 +120,6 @@ namespace dotnet_mvc.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UserTokens");
-                });
-
-            modelBuilder.Entity("dotnet_mvc.Models.DataModels.BasketModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Baskets");
-                });
-
-            modelBuilder.Entity("dotnet_mvc.Models.DataModels.BasketProductLinkModel", b =>
-                {
-                    b.Property<int>("BasketId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CountCopies")
-                        .HasColumnType("int");
-
-                    b.HasKey("BasketId", "ProductId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("BasketProductLinks");
                 });
 
             modelBuilder.Entity("dotnet_mvc.Models.DataModels.BrandModel", b =>
@@ -429,34 +396,6 @@ namespace dotnet_mvc.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("dotnet_mvc.Models.DataModels.BasketModel", b =>
-                {
-                    b.HasOne("dotnet_mvc.Models.DataModels.UserModel", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("dotnet_mvc.Models.DataModels.BasketProductLinkModel", b =>
-                {
-                    b.HasOne("dotnet_mvc.Models.DataModels.BasketModel", "Basket")
-                        .WithMany()
-                        .HasForeignKey("BasketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("dotnet_mvc.Models.DataModels.ProductModel", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Basket");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("dotnet_mvc.Models.DataModels.ProductModel", b =>

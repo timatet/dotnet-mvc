@@ -21,6 +21,7 @@ namespace dotnet_mvc.Models.DataModels
         public int CountInStack { get; set; }
 
         public BrandModel Brand { get; set; }
+        public int BrandId { get; set; }
 
         public ProductCharacteristic ProductCharacteristic { get; set; }
 
