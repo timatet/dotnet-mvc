@@ -118,7 +118,7 @@ namespace dotnet_mvc
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 applicationBuilder.UseHsts();
             }
-            applicationBuilder.UseHttpsRedirection();
+            
             applicationBuilder.UseStaticFiles();
             
             /* Организация доступа к `node_modules` по адресу `/vendor` из `_Layout.cshtml` */
