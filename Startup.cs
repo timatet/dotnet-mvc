@@ -1,3 +1,5 @@
+using System.Text;
+using System.Data.Common;
 using System.IO;
 using System;
 using System.Collections.Generic;
@@ -38,8 +40,17 @@ namespace dotnet_mvc
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+
+            string ConnectionString = String.Format("Server={0}; Database={1}; User Id={2}; Password={3}; {4}",
+                _configuration["ConnectionSettings:Server"],
+                _configuration["ConnectionSettings:Database"],
+                _configuration["ConnectionSettings:User Id"],
+                _configuration["ConnectionSettings:Password"],
+                _configuration["ConnectionSettings:Options:Default"]
+            );
+
             services.AddDbContext<ApplicationDbContext>(
-                options => options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection"))
+                options => options.UseSqlServer(ConnectionString)
             );
 
             services.Configure<KestrelServerOptions>(options =>
