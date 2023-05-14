@@ -25,7 +25,8 @@ jobs:
       - 
         name: Set variables
         run: |
-          VER=$(cat VERSION)
+          sed -n '/## Description/,/## Technology Stack/p' README.md | head -n -1 > DESCRIPTION
+          VER=$(cat README.md | tr '\n' ' ' | awk '{ sub(/.*Version: \*\*/, ""); sub(/\*\*.*/, ""); print }')
           echo "VERSION=$VER" >> $GITHUB_ENV
       -
         name: Build and push
@@ -37,3 +38,11 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:${{ env.VERSION }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:latest
+      - 
+        name: Docker Hub Description
+        uses: peter-evans/dockerhub-description@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc
+          readme-filepath: ./DESCRIPTION
