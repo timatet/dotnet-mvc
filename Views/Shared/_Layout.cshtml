@@ -97,9 +97,10 @@
             </main>
         </div>
 
+        @using dotnet_mvc.Helpers
         <footer class="border-top footer text-muted">
             <div class="container">
-                &copy; 2023 - dotnet_mvc - <a asp-area="" asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
+                &copy; 2023 - dotnet_mvc - @Globals.RELEASE_VERSION - <a asp-area="" asp-controller="Home" asp-action="Privacy">Политика конфиденциальности</a>
             </div>
         </footer>
 

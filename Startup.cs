@@ -118,6 +118,8 @@ namespace dotnet_mvc
         ){
             Initialize(applicationDbContext, userManager, roleManager).Wait();
 
+            Globals.Initialize();
+
             if (webHostEnvironment.IsDevelopment())
             {
                 //applicationBuilder.UseDeveloperExceptionPage();
