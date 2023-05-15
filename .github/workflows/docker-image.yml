@@ -27,7 +27,7 @@ jobs:
         run: |
           sed -n '/## Description/,/## Technology Stack/p' README.md | head -n -1 > DESCRIPTION
           VER=$(cat README.md | tr '\n' ' ' | awk '{ sub(/.*Version: \*\*/, ""); sub(/\*\*.*/, ""); print }')
-          echo "VERSION=$VER" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
       -
         name: Build and push
         uses: docker/build-push-action@v4
@@ -36,8 +36,10 @@ jobs:
           file: ./Dockerfile
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:${{ env.VERSION }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:${{ env.RELEASE_VERSION }}
             ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:latest
+          build-args: |
+            RELEASE_VERSION=${{ env.RELEASE_VERSION }}
       - 
         name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
