@@ -1,3 +1,4 @@
+using System;
 using System.Data.Common;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
@@ -252,11 +253,24 @@ namespace dotnet_mvc.Controllers
             return View("Error");
         }
 
-        public IActionResult Basket()
+        [HttpGet]
+        public IActionResult Index(Guid id)
         {   
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            if (!userIsSignedIn) { 
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
             
+            UserModel user = _userManager.GetUserAsync(User).Result;
+            bool userIsReal = user.Id == id ? true : false;
+            if (!userIsReal) { 
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
 
-            return View();
+            AccountModel accountModel = new AccountModel();
+            accountModel.user = user;
+
+            return View(accountModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
