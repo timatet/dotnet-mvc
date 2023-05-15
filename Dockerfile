@@ -1,5 +1,3 @@
-ARG RELEASE_VERSION=unspecified
-
 FROM node:18.12.1 as build-npm
 
 COPY package.json .
@@ -22,6 +20,7 @@ EXPOSE 5000
 ENV ASPNETCORE_ENVIRONMENT=Development
 ENV ASPNETCORE_URLS=http://*:5000
 
+ARG RELEASE_VERSION=latest
 RUN echo $RELEASE_VERSION > VERSION
 
 ENTRYPOINT ["dotnet", "dotnet-mvc.dll"]
