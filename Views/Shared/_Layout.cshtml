@@ -53,6 +53,13 @@
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                             <li>
+                                                <a asp-controller="Account" asp-action="Index"
+                                                    asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">
+                                                    <b>Личный кабинет</b>
+                                                </a>
+                                            </li>
+                                            <li><hr class="dropdown-divider"></li>
+                                            <li>
                                                 <a asp-controller="Order" asp-action="PurchaseHistory"
                                                     asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Покупки</a>
                                             </li>
