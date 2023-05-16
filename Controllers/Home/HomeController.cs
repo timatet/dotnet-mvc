@@ -100,7 +100,8 @@ namespace dotnet_mvc.Controllers
 
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
             
-            if (!userIsSignedIn) {
+            // BASKET: Set counter on button
+            if (!userIsSignedIn) { // from cookies
                 var basket = BasketHelper.GetBasketFromCookie(Request, Response);
                 int TotalCount = 0;
 
@@ -116,7 +117,7 @@ namespace dotnet_mvc.Controllers
                 } else {
                     ViewData["TotalProductHidden"] = false;
                 }
-            } else {
+            } else { //from bd
                 ViewData["TotalProduct"] = 0;
                 ViewData["TotalProductHidden"] = true;
             }

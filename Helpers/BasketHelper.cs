@@ -93,7 +93,7 @@ namespace dotnet_mvc.Helpers
             }
         }
 
-        public static void SaveToCookies (
+        private static void SaveToCookies (
             object Object, 
             HttpResponse httpResponse, 
             CookieObjectEnum cookieObjectEnum
