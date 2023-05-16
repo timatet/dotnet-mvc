@@ -99,27 +99,32 @@ namespace dotnet_mvc.Controllers
             /*----------------------------------------------------------------------------*/
 
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            int TotalCount = 0;
             
             // BASKET: Set counter on button
             if (!userIsSignedIn) { // from cookies
                 var basket = BasketHelper.GetBasketFromCookie(Request, Response);
-                int TotalCount = 0;
-
+            
                 foreach (var productKVP in basket) {
                     ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
                     TotalCount += productKVP.Value;
                 }
 
                 ViewData["TotalProduct"] = TotalCount;
-
-                if (TotalCount == 0) {
-                    ViewData["TotalProductHidden"] = true;
-                } else {
-                    ViewData["TotalProductHidden"] = false;
-                }
             } else { //from bd
-                ViewData["TotalProduct"] = 0;
+                UserModel user = _userManager.GetUserAsync(User).Result;
+
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel != null) {  
+                    TotalCount =  _applicationDbContext.BasketProductLinks.Sum(b => b.CountCopies);    
+                    ViewData["TotalProduct"] = TotalCount;   
+                }
+            }
+
+            if (TotalCount == 0) {
                 ViewData["TotalProductHidden"] = true;
+            } else {
+                ViewData["TotalProductHidden"] = false;
             }
 
             /*----------------------------------------------------------------------------*/

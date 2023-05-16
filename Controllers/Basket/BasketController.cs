@@ -39,6 +39,33 @@ namespace dotnet_mvc.Controllers.Basket
             _applicationDbContext = applicationDbContext;
         }
 
+        [HttpGet]
+        public int GetBasketProductCount() {
+            
+            int TotalCount = 0;
+            
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            
+            // BASKET: Get count of products in basket
+            if (!userIsSignedIn) { // in cookies
+                var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+
+                foreach (var productKVP in basket) {
+                    ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
+                    TotalCount += productKVP.Value;
+                }
+            } else { // in db
+                UserModel user = _userManager.GetUserAsync(User).Result;
+
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel != null) {  
+                    TotalCount =  _applicationDbContext.BasketProductLinks.Sum(b => b.CountCopies);
+                }            
+            }
+
+            return TotalCount;
+        }
+
         [HttpPost]
         public bool RemoveItemFromBasket() {
 
@@ -56,24 +83,31 @@ namespace dotnet_mvc.Controllers.Basket
                 }
             }
 
+            int product_id = int.Parse(request["product_id"].ToString());
+
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
             
             // BASKET: Remove product from basket
-            if (!userIsSignedIn) { // in cookies
-                try {
-                    int product_id = int.Parse(request["product_id"].ToString());
-
+            try {
+                if (!userIsSignedIn) { // in cookies
                     BasketHelper.RemoveFromCookieBasket(product_id, Request, Response);
 
                     return true;
-                } catch {
-                    return false;
-                }
-            } else { // in db
-            
-            }
+                } else { // in db
+                    UserModel user = _userManager.GetUserAsync(User).Result;
+                    
+                    BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                    BasketProductLinkModel basketProductLinkModel = _applicationDbContext.BasketProductLinks
+                        .Where(b => b.BasketId == basketModel.Id)
+                        .FirstOrDefault(p => p.ProductId == product_id);
+                    _applicationDbContext.Remove(basketProductLinkModel);
+                    _applicationDbContext.SaveChanges();
 
-            return false;
+                    return true;
+                }
+            } catch {
+                return false;
+            }
         }
 
         [HttpGet]
@@ -92,7 +126,18 @@ namespace dotnet_mvc.Controllers.Basket
                     TotalCost += product.Cost * productKVP.Value;
                 }
             } else { // from db
+                UserModel user = _userManager.GetUserAsync(User).Result;
                 
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel == null) {
+                    basketModel = new BasketModel();
+                    basketModel.User = user;
+                    _applicationDbContext.Baskets.Add(basketModel);
+                    _applicationDbContext.SaveChanges();
+                }
+
+                TotalCost = _applicationDbContext.BasketProductLinks.Where(b => b.BasketId == basketModel.Id)
+                    .Sum(p => p.Product.Cost * p.CountCopies);
             }
             
             return TotalCost;
@@ -116,26 +161,33 @@ namespace dotnet_mvc.Controllers.Basket
                 }
             }
 
+            int product_id = int.Parse(request["product_id"].ToString());
+            int product_count = int.Parse(request["product_count"].ToString());
+            
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
             
             // BASKET: Update count od product
-            if (!userIsSignedIn) { // in cookies
-                try {
-                    int product_id = int.Parse(request["product_id"].ToString());
-                    int product_count = int.Parse(request["product_count"].ToString());
-
+            try {
+                if (!userIsSignedIn) { // in cookies
                     BasketHelper.UpdateCount(product_id, product_count, Response, Request);
 
                     return true;
-                } catch {
-                    return false;
-                }
-            } else { // in db
-            
-            
-            }
+                } else { // in db
+                    UserModel user = _userManager.GetUserAsync(User).Result;
+                    
+                    BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                    BasketProductLinkModel basketProductLinkModel = _applicationDbContext.BasketProductLinks
+                        .Where(b => b.BasketId == basketModel.Id)
+                        .FirstOrDefault(p => p.ProductId == product_id);
+                    basketProductLinkModel.CountCopies = product_count;
+                    _applicationDbContext.BasketProductLinks.Update(basketProductLinkModel);
+                    _applicationDbContext.SaveChanges();
 
-            return false;
+                    return true;
+                }
+            } catch {
+                return false;
+            }
         }
 
         [HttpPost]
@@ -155,23 +207,50 @@ namespace dotnet_mvc.Controllers.Basket
                 }
             }
 
+            int product_id = int.Parse(response["product_id"].ToString());
+            ProductModel product = _applicationDbContext.Products.FirstOrDefault(p => p.Id == product_id);
+
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
             
             // BASKET: Add new product to basket
-            if (!userIsSignedIn) { // into cookies
-                try {
-                    int product_id = int.Parse(response["product_id"].ToString());
-                    ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == product_id);
+            try {
+                if (!userIsSignedIn) { // into cookies
                     BasketHelper.AddToCookieBasket(product, Request, Response);
+                    
                     return true;
-                } catch {
-                    return false;
-                }
-            } else { // into db
-            
-            }
+                } else { // into db
+                    UserModel user = _userManager.GetUserAsync(User).Result;
 
-            return false;
+                    BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+
+                    if (basketModel == null) {  
+                        basketModel = new BasketModel();
+                        basketModel.User = user;
+                        _applicationDbContext.Baskets.Add(basketModel);
+                        _applicationDbContext.SaveChanges();
+                    } 
+
+                    BasketProductLinkModel basketProductLinkModel = _applicationDbContext.BasketProductLinks
+                        .Where(b => b.BasketId == basketModel.Id).FirstOrDefault(b => b.ProductId == product_id);
+
+                    if (basketProductLinkModel != null) {
+                        basketProductLinkModel.CountCopies += 1;
+                        _applicationDbContext.BasketProductLinks.Update(basketProductLinkModel);
+                        _applicationDbContext.SaveChanges();
+                    } else {
+                        basketProductLinkModel = new BasketProductLinkModel();
+                        basketProductLinkModel.Basket = basketModel;
+                        basketProductLinkModel.Product = product;
+                        _applicationDbContext.BasketProductLinks.Add(basketProductLinkModel);
+                        _applicationDbContext.SaveChanges();
+                    
+                    }
+
+                    return true;
+                }
+            } catch {
+                return false;
+            }
         }
 
         [HttpGet]
@@ -189,7 +268,7 @@ namespace dotnet_mvc.Controllers.Basket
                
                 Dictionary<ProductModel, int> actualBasket = new Dictionary<ProductModel, int>();
                 foreach (var product_kvp in basketFromCookie) {
-                    ProductModel productModel = _applicationDbContext.Products.ToList().Find(p => p.Id == product_kvp.Key.Id);
+                    ProductModel productModel = _applicationDbContext.Products.FirstOrDefault(p => p.Id == product_kvp.Key.Id);
                     if (productModel != null) {
                         actualBasket.Add(productModel, product_kvp.Value);
                     }
@@ -199,7 +278,22 @@ namespace dotnet_mvc.Controllers.Basket
 
                 BasketHelper.RestructureBasket(actualBasket.ToDictionary(x => x.Key.Id, x => x.Value), Response, Request);
             } else { // from db
-                basketProductListModel.productList = new Dictionary<ProductModel, int>();
+                UserModel user = _userManager.GetUserAsync(User).Result;
+
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel != null) {  
+                    IEnumerable<BasketProductLinkModel> basketProductLinkModels = 
+                        _applicationDbContext.BasketProductLinks.Include(b => b.Product).Include(b => b.Product.ProductCharacteristic)
+                            .Where(b => b.BasketId == basketModel.Id).ToList(); 
+                    basketProductListModel.productList = basketProductLinkModels.ToDictionary(k => k.Product, v => v.CountCopies);
+                } else {
+                    BasketModel newBasketModel = new BasketModel();
+                    newBasketModel.User = user;
+                    _applicationDbContext.Baskets.Add(newBasketModel);
+                    _applicationDbContext.SaveChanges();
+
+                    basketProductListModel.productList = new Dictionary<ProductModel, int>();
+                }                
             }
 
             ViewData["ProductCountInShop"] = _applicationDbContext.Products.Count();

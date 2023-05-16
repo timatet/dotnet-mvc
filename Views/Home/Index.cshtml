@@ -165,7 +165,7 @@
       </div>
       <div class="modal-body">
         <h2 class="Inter-ExtraBold" id="_modalProductName"></h2>
-        <p id="_modalProductdescription"></p>
+        <p id="_modalProductdescription" style="word-break: break-all;"></p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Остаться на странице</button>
@@ -177,6 +177,24 @@
 
 @section Scripts {
   <script type="text/javascript">
+
+    async function getBasketProductCount() {
+        await axios.get('/Basket/GetBasketProductCount', { })
+        .then(function (response) {
+            if (response.data) {
+                if (document.getElementById("_totalProductCount").hidden) {
+                    document.getElementById("_totalProductCount").hidden = false;
+                }
+
+                document.getElementById("totalProductCount").textContent = response.data;
+            } else {
+                toastr.error('', 'Ошибка');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        }); 
+    }
 
     checkHashAfterRedirect();
 
@@ -190,6 +208,8 @@
 
                 document.getElementById("_modalProductName").innerHTML = product.Name;
                 document.getElementById("_modalProductdescription").innerHTML = product.Description;
+
+                getBasketProductCount();
 
                 var addProductToBasketModal = new bootstrap.Modal(document.getElementById('addProductToBasketModal'));
                 addProductToBasketModal.show();
