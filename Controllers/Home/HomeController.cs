@@ -98,20 +98,27 @@ namespace dotnet_mvc.Controllers
 
             /*----------------------------------------------------------------------------*/
 
-            var basket = BasketHelper.GetBasketFromCookie(Request, Response);
-            int TotalCount = 0;
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            
+            if (!userIsSignedIn) {
+                var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+                int TotalCount = 0;
 
-            foreach (var productKVP in basket) {
-                ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
-                TotalCount += productKVP.Value;
-            }
+                foreach (var productKVP in basket) {
+                    ProductModel product = _applicationDbContext.Products.ToList().Find(p => p.Id == productKVP.Key);
+                    TotalCount += productKVP.Value;
+                }
 
-            ViewData["TotalProduct"] = TotalCount;
+                ViewData["TotalProduct"] = TotalCount;
 
-            if (TotalCount == 0) {
-                ViewData["TotalProductHidden"] = true;
+                if (TotalCount == 0) {
+                    ViewData["TotalProductHidden"] = true;
+                } else {
+                    ViewData["TotalProductHidden"] = false;
+                }
             } else {
-                ViewData["TotalProductHidden"] = false;
+                ViewData["TotalProduct"] = 0;
+                ViewData["TotalProductHidden"] = true;
             }
 
             /*----------------------------------------------------------------------------*/
