@@ -30,11 +30,11 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                             </li>
                             @{
-                                if (SignInManager.IsSignedIn(User))
+                                if (SignInManager.IsSignedIn(User) && UserManager.GetUserAsync(User).Result.IsAdmin)
                                 {
                                     <li class="nav-item">
-                                        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Index">Аккаунт</a>
-                                    </li>
+                                        <a class="nav-link text-dark" asp-area="" asp-controller="Catalog" asp-action="Index">Каталог</a>
+                                    </li>                                    
                                 }
                             }
                         </ul>
