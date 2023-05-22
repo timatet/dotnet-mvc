@@ -6,7 +6,7 @@
 The first version of the web store.
 
 The theme of the store: **tourist equipment** \
-Version: **1.0.0.1**
+Version: **23/21.1**
 
 ### Completed goals
 - Product catalog
