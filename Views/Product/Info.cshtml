@@ -64,16 +64,16 @@
                 <nav style="margin-bottom: 15px;">
                     <div class="nav nav-tabs" id="nav-tab" role="tablist">
                         <button class="nav-link active" id="nav-desc-tab" data-bs-toggle="tab" 
-                            data-bs-target="#nav-desc" type="button" role="tab" aria-controls="nav-desc" aria-selected="true">Описание</button>
+                            data-bs-target="#nav-desc" type="button" role="tab" aria-controls="nav-desc" aria-selected="true">@Html.DisplayNameFor(model => model.Description)</button>
                         <button class="nav-link" id="nav-char-tab" data-bs-toggle="tab" 
-                            data-bs-target="#nav-char" type="button" role="tab" aria-controls="nav-char" aria-selected="false">Характеристики</button>
+                            data-bs-target="#nav-char" type="button" role="tab" aria-controls="nav-char" aria-selected="false">@Html.DisplayNameFor(model => model.ProductCharacteristic)</button>
                         <button class="nav-link" id="nav-brand-tab" data-bs-toggle="tab" 
-                            data-bs-target="#nav-brand" type="button" role="tab" aria-controls="nav-brand" aria-selected="false">О брэнде</button>
+                            data-bs-target="#nav-brand" type="button" role="tab" aria-controls="nav-brand" aria-selected="false">@Html.DisplayNameFor(model => model.Brand)</button>
                     </div>
                 </nav>
                 <div class="tab-content" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-desc" role="tabpanel" aria-labelledby="nav-desc-tab">
-                        <h3 align="left">Описание:</h3>
+                        <h3 align="left">@Html.DisplayNameFor(model => model.Description):</h3>
                         <p align="left" style="margin-left: 10px;" class="wordBreak">
                             @Html.DisplayFor(model => model.Description)
                         </p>

@@ -19,15 +19,17 @@
             
         </div>
         <div class="flex-right">
-            <a class="btn btn-outline-primary" style="margin-right: 2.5px;">
+            @* <a class="btn btn-outline-primary" style="margin-right: 2.5px;">
                 <i class="bi bi-filetype-pdf"></i>
                 Скачать
-            </a>
-            <a class="btn btn-outline-primary" style="margin-right: 2.5px; margin-left: 2.5px;">
+            </a> *@
+            <a class="btn btn-outline-primary" style="margin-right: 2.5px; margin-left: 2.5px;"
+                data-bs-toggle="modal" data-bs-target="#sendBasketToEmailModal">
                 <i class="bi bi-envelope-at"></i>
                 Отправить на почту
             </a>
-            <a class="btn btn-outline-primary" style="margin-left: 2.5px;">
+            <a class="btn btn-outline-primary" style="margin-left: 2.5px;"
+                asp-controller="Basket" asp-action="Clear">
                 <i class="bi bi-cart-dash"></i>
                 Очистить
             </a>
@@ -127,7 +129,50 @@
     </div>
 }
 
+@* Отправить коризну на почту *@
+<div class="modal fade" id="sendBasketToEmailModal" data-bs-backdrop="static" 
+    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Укажите почту</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+      </div>
+      <div class="modal-body">
+        <label for="emailInput">Email адрес</label>
+        <input type="email" class="form-control" id="emailInput" placeholder="name@example.com" value="@ViewBag.UserEmail">
+        <div class="form-text">
+            Если вы авторизованы, то по умолчанию будет указан почтовый адрес из вашего аккаунта. 
+            При необходимости вы можете указать здесь другой.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Отмена</button>
+        <button type="button" class="btn btn-primary" onclick="postBasketToEmail();">Отправить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+
+    function postBasketToEmail() {
+
+        axios.post('/Basket/SendBasket', {
+            email: document.getElementById('emailInput').value
+        })
+        .then(function (response) {
+            if (response.data == true) {
+                window.location.reload();
+            } else {
+                console.log(response)
+                toastr.error('', 'Ошибка');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     function removeItemFromBasket(product) {
         axios.post('/Basket/RemoveItemFromBasket', {

@@ -10,7 +10,7 @@
     <div class="block-container">
         <form asp-action="Edit" enctype="multipart/form-data" method="post" class="needs-validation row g-3" novalidate> 
             <div class="col-12">
-                <label for="productName" class="form-label">Название товара</label>
+                <label for="productName" class="form-label">@Html.DisplayNameFor(p => p.Name)</label>
                 <input asp-for="Name" type="text" class="form-control" id="productName" placeholder="Ботинки альпинистские Zamberlan" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите название товара.
@@ -18,7 +18,7 @@
             </div>
             
             <div class="col-12">
-                <label for="productCategory" class="form-label">Выбор категории товара</label>
+                <label for="productCategory" class="form-label">@Html.DisplayNameFor(model => model.Category)</label>
                 <select 
                     asp-for="Category"
                     class="form-select" asp-items="Html.GetEnumSelectList<dotnet_mvc.Models.Auxiliary.CategoryEnum>()" 
@@ -27,7 +27,7 @@
             </div>
 
             <div class="col-12">
-                <label for="productDescription" class="form-label">Описание товара</label>
+                <label for="productDescription" class="form-label">@Html.DisplayNameFor(model => model.Description)</label>
                 <textarea 
                     asp-for="Description" minlength="30" class="form-control" 
                     id="productDescription" rows="3" placeholder="Описание товара" required>
@@ -80,21 +80,21 @@
                 </select>
             </div>
             <div class="col-4">
-                <label for="productBrand" class="form-label">Бренд товара</label>
+                <label for="productBrand" class="form-label">@Html.DisplayNameFor(model => model.Brand)</label>
                 <input asp-for="Brand.Name" type="text" class="form-control" id="productBrand" placeholder="Zamberlan" required>
                 <div class="invalid-feedback">
                     Пожалуйста, кажите производителя товара.
                 </div>
             </div>
             <div class="col-4">
-                <label for="productCost" class="form-label">Стоимость</label>
+                <label for="productCost" class="form-label">@Html.DisplayNameFor(model => model.Cost)</label>
                 <input asp-for="Cost" type="number" min="1" max="50000" class="form-control" id="productCost" placeholder="5700" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите стоимость товара (1 - 50000).
                 </div>
             </div>
             <div class="col-4">
-                <label for="productCountInStock" class="form-label">Количество на складе</label>
+                <label for="productCountInStock" class="form-label">@Html.DisplayNameFor(model => model.CountInStack)</label>
                 <input asp-for="CountInStack" type="number" min="0" class="form-control" id="productCountInStock" placeholder="51" required>
                 <div class="invalid-feedback">
                     Пожалуйста, укажите количество товара на складе.
@@ -107,7 +107,7 @@
             </div>
 
             <div class="col-12">
-                <label for="productImage" class="form-label">Изображение товара</label>
+                <label for="productImage" class="form-label">@Html.DisplayNameFor(model => model.ImageUrl)</label>
                 <input class="form-control" name="upload" onchange="ValidateSingleInput(this);" type="file" id="productImage">
                 <div class="form-text">
                     Изображение поменяется только в случае выбора нового. Оставьте поле пустым, чтобы сохранить предыдущее.
@@ -122,7 +122,7 @@
             <input asp-for="ImageUrl" type="hidden">
 
             <div class="col-12 flex-right">
-                <a asp-action="Index" asp-controller="Home" type="button" class="btn btn-secondary" style="margin-right: 3px;">Отмена</a>
+                <a onclick="goToBack()" type="button" class="btn btn-secondary" style="margin-right: 3px;">Отмена</a>
                 <button asp-fragment="edited" type="submit" class="btn btn-primary" style="margin-left: 3px;">Изменить товар</button>
             </div>
         </form>
@@ -130,6 +130,14 @@
 </div>
 
 <script>
+    function goToBack() {
+        if (history.length > 1) {
+            history.go(-1);
+        } else {
+            window.location.href = "/Home/Index";
+        }
+    }
+
     /* Скрипт проверки валидации формы */
     (function() {
         'use strict';

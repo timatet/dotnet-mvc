@@ -1,5 +1,7 @@
 @model dotnet_mvc.Models.HelpModels.ProductListModel
 
+@using Newtonsoft.Json
+
 @{
     ViewData["Title"] = "Каталог управления товарами";
 }
@@ -9,29 +11,39 @@
 <div class="block-container row">
     <table class="table table-hover">
         <thead>
-            <tr>
+            <tr style="word-wrap: break-word;">
                 <th scope="col">#</th>
-                <th scope="col">Название</th>
-                <th scope="col">Категория</th>
-                <th scope="col">Бренд</th>
-                <th scope="col">Кол-во на складе</th>
-                <th scope="col">Цена</th>
-                <th></th>
+                <th scope="col">@Html.DisplayNameFor(m => m.productModel.Name)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.productModel.Category)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.productModel.Brand)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.productModel.CountInStack)</th>
+                <th scope="col">@Html.DisplayNameFor(m => m.productModel.Cost)</th>
+                <th scope="col">Действие</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var product in Model.productList)
             {
-                <tr>
+                <tr style="word-wrap: break-word;">
                     <th scope="row">@product.Id</th>
                     <td>@product.Name</td>
                     <td>@product.Category</td>
                     <td>@product.Brand.Name</td>
-                    <td>@product.CountInStack</td>
-                    <td><span contenteditable>@product.Cost</span> Р</td>
-                    <td></td>
+                    <td><span>@product.CountInStack</span> шт.</td>
+                    <td><span>@product.Cost</span> ₽</td>
+                    <td style="text-align: center;">
+                        <a type="button" class="btn btn-outline-primary btn-sm" 
+                            style="border-radius: 50%;"
+                            asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id">
+                            <i class="bi bi-gear"></i>
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
+
+<script>
+    
+</script>

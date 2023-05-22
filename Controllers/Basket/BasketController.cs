@@ -264,7 +264,7 @@ namespace dotnet_mvc.Controllers.Basket
                 List<ProductModel> products = _applicationDbContext.Products.Include(p => p.ProductCharacteristic).ToList();
                 Dictionary<ProductModel, int> basketFromCookie = 
                     BasketHelper.GetBasketFromCookie(Request, Response)
-                    .ToDictionary(kvp => products.Find(x => x.Id == kvp.Key), kvp => kvp.Value);
+                        .ToDictionary(kvp => products.Find(x => x.Id == kvp.Key), kvp => kvp.Value);
                
                 Dictionary<ProductModel, int> actualBasket = new Dictionary<ProductModel, int>();
                 foreach (var product_kvp in basketFromCookie) {
@@ -298,7 +298,120 @@ namespace dotnet_mvc.Controllers.Basket
 
             ViewData["ProductCountInShop"] = _applicationDbContext.Products.Count();
 
+            if (userIsSignedIn) {
+                ViewData["UserEmail"] = _userManager.GetUserAsync(User).Result.Email;
+            } else {
+                // TODO: Если пользователь не авторизован , то подставлять последнее значение из куки?
+                ViewData["UserEmail"] = string.Empty;
+            }
+
             return View(basketProductListModel);
+        }
+
+        [HttpGet]
+        public IActionResult Clear()
+        {
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            BasketProductListModel basketProductListModel = new BasketProductListModel();
+
+            // BASKET: Clear all products
+            if (!userIsSignedIn) { // from cookies
+                BasketHelper.RestructureBasket(new Dictionary<int, int>(), Response, Request);
+            } else { // from db
+                UserModel user = _userManager.GetUserAsync(User).Result;
+
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel != null) {  
+                    IEnumerable<BasketProductLinkModel> basketProductLinkModels = 
+                        _applicationDbContext.BasketProductLinks.Include(b => b.Product).Include(b => b.Product.ProductCharacteristic)
+                            .Where(b => b.BasketId == basketModel.Id).ToList(); 
+
+                    _applicationDbContext.BasketProductLinks.RemoveRange(basketProductLinkModels);
+                    _applicationDbContext.SaveChanges();
+                } else {
+                    BasketModel newBasketModel = new BasketModel();
+                    newBasketModel.User = user;
+                    _applicationDbContext.Baskets.Add(newBasketModel);
+                    _applicationDbContext.SaveChanges();
+                }                
+            }
+
+            basketProductListModel.productList = new Dictionary<ProductModel, int>();
+            ViewData["ProductCountInShop"] = _applicationDbContext.Products.Count();
+
+            return RedirectToAction("Index", "Basket", basketProductListModel);
+        }
+
+        [HttpPost]
+        public async Task<bool> SendBasket(string email) {
+
+            Dictionary<string, object> response = new Dictionary<string, object>();
+
+            MemoryStream stream = new MemoryStream();
+            Request.Body.CopyTo(stream);
+            stream.Position = 0;
+            using (StreamReader reader = new StreamReader(stream))
+            {
+                string requestBody = reader.ReadToEnd();
+                if (requestBody.Length > 0)
+                {
+                    response = JsonConvert.DeserializeObject<Dictionary<string, object>>(requestBody);
+                }
+            }
+
+            string email_br = response["email"].ToString();
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+
+            Dictionary<ProductModel, int> basketProductsList = new Dictionary<ProductModel, int> ();
+            
+            // BASKET: Send Basket to Email
+            try {
+                if (!userIsSignedIn) { // into cookies
+                    List<ProductModel> products = _applicationDbContext.Products.Include(p => p.ProductCharacteristic).ToList();
+
+                    // Список товаров из куки
+                    basketProductsList = 
+                        BasketHelper.GetBasketFromCookie(Request, Response)
+                            .ToDictionary(
+                                kvp => _applicationDbContext.Products
+                                    .Include(p => p.ProductCharacteristic)
+                                        .FirstOrDefault(x => x.Id == kvp.Key), 
+                                kvp => kvp.Value
+                            );
+                } else { // into db
+                    UserModel user = _userManager.GetUserAsync(User).Result;
+
+                    BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+
+                    if (basketModel == null) {  
+                        basketModel = new BasketModel();
+                        basketModel.User = user;
+                        _applicationDbContext.Baskets.Add(basketModel);
+                        _applicationDbContext.SaveChanges();
+                    } 
+
+                    // Список товаров из бд
+                    basketProductsList = 
+                        _applicationDbContext.BasketProductLinks.Include(b => b.Product).Include(b => b.Product.ProductCharacteristic)
+                            .Where(b => b.BasketId == basketModel.Id)
+                                .ToDictionary(b => b.Product, b => b.CountCopies);
+                }
+            } catch {
+                return false;
+            }
+
+            // Формирование письма
+            string email_brief = HtmlGenerator.GetBasketHtml(basketProductsList);
+
+            var emailService = new EmailService();
+            await emailService.SendEmailAsync(email_br, "Ваши товары", email_brief);
+            try {
+                await emailService.SendEmailAsync(email_br, "Ваши товары", email_brief);
+
+                return true;
+            } catch {
+                return false;
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
