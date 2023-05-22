@@ -404,7 +404,6 @@ namespace dotnet_mvc.Controllers.Basket
             string email_brief = HtmlGenerator.GetBasketHtml(basketProductsList);
 
             var emailService = new EmailService();
-            await emailService.SendEmailAsync(email_br, "Ваши товары", email_brief);
             try {
                 await emailService.SendEmailAsync(email_br, "Ваши товары", email_brief);
 
