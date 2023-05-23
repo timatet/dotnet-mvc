@@ -30,6 +30,14 @@ namespace dotnet_mvc.Models.DataModels
         ){
             this.Product = productModel;
             this.Basket = basketModel;
-        }        
+        }   
+
+        public BasketProductLinkModel(
+            ProductModel productModel, 
+            int countCopies
+        ){
+            this.Product = productModel;
+            this.CountCopies = countCopies;
+        }       
     }
 }

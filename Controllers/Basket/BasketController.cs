@@ -257,7 +257,8 @@ namespace dotnet_mvc.Controllers.Basket
         public IActionResult Index()
         {
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            BasketProductListModel basketProductListModel = new BasketProductListModel();
+
+            List<BasketProductLinkModel> basketProductLinks = new List<BasketProductLinkModel>();
 
             // BASKET: Get list of products
             if (!userIsSignedIn) { // from cookies
@@ -270,11 +271,10 @@ namespace dotnet_mvc.Controllers.Basket
                 foreach (var product_kvp in basketFromCookie) {
                     ProductModel productModel = _applicationDbContext.Products.FirstOrDefault(p => p.Id == product_kvp.Key.Id);
                     if (productModel != null) {
+                        basketProductLinks.Add(new BasketProductLinkModel(productModel, product_kvp.Value));
                         actualBasket.Add(productModel, product_kvp.Value);
                     }
                 }
-
-                basketProductListModel.productList = actualBasket;
 
                 BasketHelper.RestructureBasket(actualBasket.ToDictionary(x => x.Key.Id, x => x.Value), Response, Request);
             } else { // from db
@@ -282,17 +282,14 @@ namespace dotnet_mvc.Controllers.Basket
 
                 BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
                 if (basketModel != null) {  
-                    IEnumerable<BasketProductLinkModel> basketProductLinkModels = 
+                    basketProductLinks = 
                         _applicationDbContext.BasketProductLinks.Include(b => b.Product).Include(b => b.Product.ProductCharacteristic)
                             .Where(b => b.BasketId == basketModel.Id).ToList(); 
-                    basketProductListModel.productList = basketProductLinkModels.ToDictionary(k => k.Product, v => v.CountCopies);
                 } else {
                     BasketModel newBasketModel = new BasketModel();
                     newBasketModel.User = user;
                     _applicationDbContext.Baskets.Add(newBasketModel);
                     _applicationDbContext.SaveChanges();
-
-                    basketProductListModel.productList = new Dictionary<ProductModel, int>();
                 }                
             }
 
@@ -305,14 +302,13 @@ namespace dotnet_mvc.Controllers.Basket
                 ViewData["UserEmail"] = string.Empty;
             }
 
-            return View(basketProductListModel);
+            return View(basketProductLinks);
         }
 
         [HttpGet]
         public IActionResult Clear()
         {
             bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            BasketProductListModel basketProductListModel = new BasketProductListModel();
 
             // BASKET: Clear all products
             if (!userIsSignedIn) { // from cookies
@@ -336,10 +332,9 @@ namespace dotnet_mvc.Controllers.Basket
                 }                
             }
 
-            basketProductListModel.productList = new Dictionary<ProductModel, int>();
             ViewData["ProductCountInShop"] = _applicationDbContext.Products.Count();
 
-            return RedirectToAction("Index", "Basket", basketProductListModel);
+            return RedirectToAction("Index", "Basket", new List<BasketProductLinkModel>());
         }
 
         [HttpPost]
