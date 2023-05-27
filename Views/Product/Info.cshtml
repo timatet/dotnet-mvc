@@ -1,4 +1,4 @@
-﻿@model dotnet_mvc.Models.DataModels.ProductModel
+@model dotnet_mvc.Models.DataModels.ProductModel
 
 @{
     ViewData["Title"] = "Product page";
@@ -31,9 +31,13 @@
         </div>
         <div class="flex-right">
             <a asp-controller="Account" asp-action="Basket" 
-                type="button" class="btn btn-outline-primary">
+                type="button" class="btn btn-outline-primary position-relative">
                 <i class="bi bi-basket"></i>
                 Корзина
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                    id="_totalProductCount" hidden="@ViewBag.TotalProductHidden">
+                    <span id="totalProductCount">@ViewBag.TotalProduct</span>
+                </span>
             </a>
         </div>
     </div>
@@ -175,6 +179,25 @@
 </div>
 
 <script>
+
+    async function getBasketProductCount() {
+        await axios.get('/Basket/GetBasketProductCount', { })
+        .then(function (response) {
+            if (response.data) {
+                if (document.getElementById("_totalProductCount").hidden) {
+                    document.getElementById("_totalProductCount").hidden = false;
+                }
+
+                document.getElementById("totalProductCount").textContent = response.data;
+            } else {
+                toastr.error('', 'Ошибка');
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        }); 
+    }
+
     function postDeleteRequest() {
         axios.post('/Product/Delete', {
             id: @Model.Id
@@ -198,6 +221,9 @@
         .then(function (response) {
             if (response.data == true) {
                 toastr.success('Продукт был добавлен в корзину.', 'Успех');
+
+                getBasketProductCount();
+
                 var addProductToBasketModal = new bootstrap.Modal(document.getElementById('addProductToBasketModal'));
                 addProductToBasketModal.show();
             } else {

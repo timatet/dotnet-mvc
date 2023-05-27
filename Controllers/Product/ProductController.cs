@@ -26,7 +26,7 @@ namespace dotnet_mvc.Controllers.Product
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly UserManager<UserModel> _userManager;
         private readonly SignInManager<UserModel> _signInManager;
-        private readonly ApplicationDbContext db;
+        private readonly ApplicationDbContext _applicationDbContext;
         
         const int ImageWidth = 1000;
         const int ImageHeight = 1000;
@@ -39,7 +39,7 @@ namespace dotnet_mvc.Controllers.Product
             SignInManager<UserModel> signInManager
         ){
             _logger = logger;
-            db = applicationDbContext;
+            _applicationDbContext = applicationDbContext;
             _webHostEnvironment = webHostEnvironment;
             _userManager = userManager;
             _signInManager = signInManager;
@@ -52,13 +52,45 @@ namespace dotnet_mvc.Controllers.Product
                 return NotFound();
             }
               
-            var product = db.Products.Include(p => p.ProductCharacteristic).Include(p => p.Brand).FirstOrDefault(p => p.Id == id);
+            var product = _applicationDbContext.Products.Include(p => p.ProductCharacteristic).Include(p => p.Brand).FirstOrDefault(p => p.Id == id);
             if (product == null) {
                 return NotFound();
             }
 
             string webRootPath = _webHostEnvironment.WebRootPath;
             ViewData["WebRootPath"] = webRootPath;
+
+            /*----------------------------------------------------------------------------*/
+
+            bool userIsSignedIn = _signInManager.IsSignedIn(User);
+            int TotalCount = 0;
+            
+            // BASKET: Set counter on button
+            if (!userIsSignedIn) { // from cookies
+                var basket = BasketHelper.GetBasketFromCookie(Request, Response);
+            
+                foreach (var productKVP in basket) {
+                    TotalCount += productKVP.Value;
+                }
+
+                ViewData["TotalProduct"] = TotalCount;
+            } else { //from bd
+                UserModel user = _userManager.GetUserAsync(User).Result;
+
+                BasketModel basketModel = _applicationDbContext.Baskets.FirstOrDefault(b => b.UserId == user.Id);
+                if (basketModel != null) {  
+                    TotalCount =  _applicationDbContext.BasketProductLinks.Sum(b => b.CountCopies);    
+                    ViewData["TotalProduct"] = TotalCount;   
+                }
+            }
+
+            if (TotalCount == 0) {
+                ViewData["TotalProductHidden"] = true;
+            } else {
+                ViewData["TotalProductHidden"] = false;
+            }
+
+            /*----------------------------------------------------------------------------*/
                
             return View(product);
         }
@@ -72,7 +104,7 @@ namespace dotnet_mvc.Controllers.Product
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
             
-            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name");
+            ViewData["BrandList"] = new SelectList(_applicationDbContext.Brands, "Id", "Name");
             ViewData["CharacteristicList"] = new SelectList(ProductCharacteristic.GetAttributesNames(), "ShortName", "Name");
 
             return View();
@@ -94,11 +126,11 @@ namespace dotnet_mvc.Controllers.Product
             // Ищем или сохраняем бренд
             BrandModel productBrand = product.Brand;
             if (productBrand == null) {
-                productBrand = db.Brands.Find(product.BrandId);
+                productBrand = _applicationDbContext.Brands.Find(product.BrandId);
                 product.Brand = productBrand;
             } else {
-                db.Brands.Add(productBrand);
-                db.SaveChanges();
+                _applicationDbContext.Brands.Add(productBrand);
+                _applicationDbContext.SaveChanges();
                 int brandId = productBrand.Id;
             }
 
@@ -125,13 +157,13 @@ namespace dotnet_mvc.Controllers.Product
             // Сохранение выбранных характеристик
             ProductCharacteristic productCharacteristic = new ProductCharacteristic();
             productCharacteristic.SetFields(productCharacteristicList);
-            db.ProductCharacteristics.Add(productCharacteristic);
-            db.SaveChanges();
+            _applicationDbContext.ProductCharacteristics.Add(productCharacteristic);
+            _applicationDbContext.SaveChanges();
             product.ProductCharacteristic = productCharacteristic;
             
             // Записываем товар в базу данных
-            db.Products.Add(product);
-            db.SaveChanges();
+            _applicationDbContext.Products.Add(product);
+            _applicationDbContext.SaveChanges();
 
             return RedirectToAction("Index", "Home");
         }
@@ -176,15 +208,15 @@ namespace dotnet_mvc.Controllers.Product
             } 
 
             // Сохранение выбранных характеристик
-            ProductCharacteristic productCharacteristic = db.ProductCharacteristics.Find(product.ProductCharacteristic.Id);
+            ProductCharacteristic productCharacteristic = _applicationDbContext.ProductCharacteristics.Find(product.ProductCharacteristic.Id);
             productCharacteristic.SetFields(productCharacteristicList);
-            db.ProductCharacteristics.Update(productCharacteristic);
-            db.SaveChanges();
+            _applicationDbContext.ProductCharacteristics.Update(productCharacteristic);
+            _applicationDbContext.SaveChanges();
             product.ProductCharacteristic = productCharacteristic;
             
             // Обновляем товар в базе данных
-            db.Products.Update(product);
-            db.SaveChanges();
+            _applicationDbContext.Products.Update(product);
+            _applicationDbContext.SaveChanges();
 
             return RedirectToAction("Info", "Product", new { id = product.Id });
         }
@@ -202,7 +234,7 @@ namespace dotnet_mvc.Controllers.Product
             if (id == null)
                 return NotFound();
 
-            var product = db.Products
+            var product = _applicationDbContext.Products
                 .Include(p => p.Brand)
                 .Include(p => p.ProductCharacteristic)
                 .FirstOrDefault(p => p.Id == id);
@@ -210,7 +242,7 @@ namespace dotnet_mvc.Controllers.Product
             if (product == null)
                 return NotFound();
 
-            ViewData["BrandList"] = new SelectList(db.Brands, "Id", "Name", "Description");
+            ViewData["BrandList"] = new SelectList(_applicationDbContext.Brands, "Id", "Name", "Description");
 
             // Выбираем список характеристик, которые уже заполнены у товара
             var characteristicListAvailable = product.ProductCharacteristic.GetDisplaysAndValuesPresent();
@@ -250,15 +282,15 @@ namespace dotnet_mvc.Controllers.Product
 
             try {
                 int productId = int.Parse(response["id"].ToString());
-                ProductModel product = db.Products.Find(productId);
+                ProductModel product = _applicationDbContext.Products.Find(productId);
 
                 if (product.ImageUrl != null && product.ImageUrl != "") {
                     string imagePath = _webHostEnvironment.WebRootPath + "/images/" + product.ImageUrl;
                     System.IO.File.Delete(imagePath);
                 }
 
-                db.Products.Remove(product);
-                db.SaveChanges();
+                _applicationDbContext.Products.Remove(product);
+                _applicationDbContext.SaveChanges();
             } catch {
                 return false;
             }
