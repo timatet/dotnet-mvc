@@ -1,0 +1,65 @@
+@model dotnet_mvc.Models.HelpModels.OrderFormationModel
+
+@{
+    ViewData["Title"] = "Оформление заказа";
+}
+
+@* 1. Оформление заказа 
+      - Личные данные
+      - Выбор ПВЗ
+      - Финальный список товаров *@
+
+<h1>@ViewData["Title"]</h1>
+<h3>Укажите личные данные</h3>
+
+<form method="post" asp-controller="Order" asp-action="Formation" 
+    class="row g-3" style="margin-left: 15%; margin-right: 15%;">
+    <div class="col-md-6">
+        <label for="orderClientName" class="form-label">Имя</label>
+        <input type="text" asp-for="orderModel.Name" required
+            class="form-control" id="orderClientName">
+    </div>
+    <div class="col-md-6">
+        <label for="orderClientLastName" class="form-label">Фамилия</label>
+        <input type="text" asp-for="orderModel.LastName" required
+            class="form-control" id="orderClientLastName">
+    </div>
+
+    <div class="col-md-12">
+        <label for="orderClientAddress" class="form-label">Адрес</label>
+        <input type="text" asp-for="orderModel.Address" required
+            class="form-control" id="orderClientAddress">
+    </div>
+
+    <div class="col-md-6">
+        <label for="orderClientLastName" class="form-label">Номер телефона</label>
+        <input type="text" required asp-for="orderModel.Phone"
+            class="form-control" id="orderClientPhone">
+    </div>
+    <div class="col-md-6">
+        <label for="orderClientDeliveryMethod" class="form-label">Способ доставки</label>
+        <select asp-items="@ViewBag.DeliveryMethods" asp-for="orderModel.DeliveryMethod"
+            id="orderClientDeliveryMethod" class="form-select" required>
+        </select>
+    </div>
+
+    <!-- Передача необновляемых параметров -->
+    @* <input asp-for="orderModel.Id" type="hidden"> *@
+    <input asp-for="orderModel.TotalPrice" type="hidden">
+    <input asp-for="orderModel.CreationDate" type="hidden">
+    <input asp-for="orderModel.User.Id" type="hidden">
+    <input asp-for="orderProductModels" type="hidden">
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Оформить заказ</button>
+    </div>
+</form>
+
+@section Scripts {
+    <script>
+        (function(){
+            'use strict';
+            $("#orderClientPhone").mask("\+7 (999) 999-9999");
+        })();
+    </script>
+}

@@ -23,6 +23,7 @@
     "jquery": "^3.6.3",
     "jquery-validation": "^1.19.5",
     "jquery-validation-unobtrusive": "^4.0.0",
+    "jquery.maskedinput": "^1.4.1",
     "toastr": "^2.1.4"
   }
 }

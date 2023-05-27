@@ -12,31 +12,14 @@ namespace dotnet_mvc.Models.DataModels
         public int BasketId { get; set; }
         public int CountCopies { get; set; } = 1;
 
-        public BasketProductLinkModel() { }
-
-        public BasketProductLinkModel(
-            ProductModel productModel, 
-            BasketModel basketModel, 
-            int countCopies
-        ){
-            this.Product = productModel;
-            this.Basket = basketModel;
-            this.CountCopies = countCopies;
-        }
-
-        public BasketProductLinkModel(
-            ProductModel productModel, 
-            BasketModel basketModel
-        ){
-            this.Product = productModel;
-            this.Basket = basketModel;
-        }   
+        public BasketProductLinkModel() { } 
 
         public BasketProductLinkModel(
             ProductModel productModel, 
             int countCopies
         ){
             this.Product = productModel;
+            this.ProductId = productModel.Id;
             this.CountCopies = countCopies;
         }       
     }

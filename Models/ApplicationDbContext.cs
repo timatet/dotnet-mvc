@@ -19,6 +19,8 @@ namespace dotnet_mvc.Models.DataModels
         public DbSet<ProductCharacteristic> ProductCharacteristics { get; set; }
         public DbSet<BasketModel> Baskets { get; set; }
         public DbSet<BasketProductLinkModel> BasketProductLinks { get; set; }
+        public DbSet<OrderModel> Orders { get; set; }
+        public DbSet<OrderProductModel> OrderProducts { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

@@ -1,0 +1,15 @@
+@model dotnet_mvc.Models.DataModels.OrderModel
+
+@{
+    ViewData["Title"] = "Заказ сформирован";
+}
+
+@* 2. Формирование заказа
+      - Выдача заказу номера
+      - Уведомление "Заказ сформирован" *@
+
+<h1>@ViewData["Title"]</h1>
+
+<div>
+    Заказ сформирован: @Model.Id
+</div>

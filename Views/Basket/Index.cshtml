@@ -40,6 +40,7 @@
         <table class="table">
             <thead>
                 <tr style="color: #7f7f7f; font-size: .9375rem;">
+                    <th scope="col">#</th>
                     <th scope="col" colspan="2">
                         @Model.Count() @GetWordInCount(Model.Count(), "товар", "товара", "товаров")
                     </th>
@@ -54,6 +55,10 @@
                 @foreach (var product in Model)
                 {
                     <tr style="text-align: left; vertical-align: middle;" class="Inter-Medium">
+                        <td>
+                            <input class="form-check-input" type="checkbox" id="check-@product.Product.Id" 
+                                onchange="markProduct(this, @JsonConvert.SerializeObject(product.ProductId), @JsonConvert.SerializeObject(product.CountCopies));">
+                        </td>
                         <td style="text-align: center;" >
                             <img src='@Url.Content("~/images/")@product.Product.ImageUrl' class="img-circle" 
                                 width="64px" style="aspect-ratio: 1/1;" alt="...">
@@ -120,10 +125,13 @@
             
             </div>
             <div class="flex-right">
-                <a class="btn btn-primary btn-lg" style="margin-left: 2.5px;">
-                    <i class="bi bi-cash-coin"></i>
-                    Перейти к оформлению
-                </a>
+                <form method="post" asp-controller="Order" asp-action="Creation" >
+                    <input type="hidden" name="orderList" id="orderList" />
+                    <button type="submit" class="btn btn-primary btn-lg" style="margin-left: 2.5px;">
+                        <i class="bi bi-cash-coin"></i>
+                        Перейти к оформлению
+                    </button>
+                </form>
             </div>
         </div>
     </div>
@@ -156,6 +164,21 @@
 
 <script>
 
+    plain_order_products = []
+    function markProduct(element, product_link_id, product_link_copies) {
+        if (element.checked) {
+            plain_order_products.push([product_link_id, product_link_copies]);
+        } else {
+            var index = plain_order_products.findIndex(e => e[0] === product_link_id)
+            if (index > -1) {
+                plain_order_products.splice(index, 1);
+            }
+        }
+
+        document.getElementById('orderList').value = JSON.stringify(plain_order_products);
+    }
+
+    // TODO: Реализация фидбека успех/неуспех
     function postBasketToEmail() {
 
         axios.post('/Basket/SendBasket', {
