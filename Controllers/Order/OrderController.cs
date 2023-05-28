@@ -4,17 +4,22 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using dotnet_mvc.Models.Auxiliary;
 using dotnet_mvc.Models.DataModels;
 using dotnet_mvc.Models.HelpModels;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using Net.Codecrete.QrCodeGenerator;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -26,17 +31,20 @@ namespace dotnet_mvc.Controllers
         private readonly UserManager<UserModel> _userManager;
         private readonly SignInManager<UserModel> _signInManager;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
         public OrderController(
             ILogger<OrderController> logger, 
             ApplicationDbContext applicationDbContext, 
             UserManager<UserModel> userManager,
+            IWebHostEnvironment webHostEnvironment,
             SignInManager<UserModel> signInManager
         ){
             _logger = logger;
             _applicationDbContext = applicationDbContext;
             _userManager = userManager;
             _signInManager = signInManager;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         [HttpPost]
@@ -110,6 +118,19 @@ namespace dotnet_mvc.Controllers
                 orderProduct.Product = _applicationDbContext.Products.FirstOrDefault(p => p.Id == orderProduct.ProductId);
                 _applicationDbContext.OrderProducts.Add(orderProduct);
                 _applicationDbContext.SaveChanges();
+            }
+
+            string orderDataForQr = string.Format("{0}", orderModel.Id);
+            var qr = QrCode.EncodeText(orderDataForQr, QrCode.Ecc.High);
+            string svg = qr.ToSvgString(1);
+
+            bool ordersQrCodeDirectoryExist = System.IO.Directory.Exists(_webHostEnvironment.WebRootPath + "/orders/");
+            if(!ordersQrCodeDirectoryExist)
+                System.IO.Directory.CreateDirectory(_webHostEnvironment.WebRootPath + "/orders/");
+
+            using(var fileStream = new FileStream(_webHostEnvironment.WebRootPath + "/orders/order_" + orderDataForQr + ".svg", FileMode.Create))
+            {
+                fileStream.Write(Encoding.UTF8.GetBytes(svg));
             }
 
             return View(orderModel);
