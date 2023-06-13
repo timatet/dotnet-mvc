@@ -12,7 +12,7 @@
     <div class="block-container flex-space-between">
         <div class="flex-left">
             @{
-                if (SignInManager.IsSignedIn(User) && @UserManager.GetUserAsync(User).Result.IsAdmin)
+                if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {   
                     <a type="button" class="btn btn-outline-primary"
                         asp-action="Edit" asp-route-id="@Model.Id"

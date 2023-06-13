@@ -184,6 +184,7 @@ namespace dotnet_mvc.Controllers
                 };
                 
                 var result = await _userManager.CreateAsync(user, registerModel.Password);
+                await _userManager.AddToRoleAsync(user, "User");
                 if (result.Succeeded)
                 {
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

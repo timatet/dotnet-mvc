@@ -7,6 +7,7 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<dotnet_mvc.Models.DataModels.UserModel>  SignInManager
 @inject UserManager<dotnet_mvc.Models.DataModels.UserModel>  UserManager
+@inject RoleManager<dotnet_mvc.Models.DataModels.UserRoleModel> RoleManager
 
 @using Newtonsoft.Json
 
@@ -21,7 +22,7 @@
     <div class="block-container flex-space-between">
         <div class="flex-left">
             @{
-                if (SignInManager.IsSignedIn(User) && @UserManager.GetUserAsync(User).Result.IsAdmin)
+                if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                 {  
                     <a asp-controller="Product" asp-action="New" class="btn btn-outline-primary">
                         <i class="bi bi-folder-plus"></i>

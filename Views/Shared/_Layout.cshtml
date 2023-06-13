@@ -29,7 +29,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Главная</a>
                             </li>
                             @{
-                                if (SignInManager.IsSignedIn(User) && UserManager.GetUserAsync(User).Result.IsAdmin)
+                                if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
                                 {
                                     <li class="nav-item">
                                         <a class="nav-link text-dark" asp-area="" asp-controller="Catalog" asp-action="Index">Каталог</a>
@@ -51,17 +51,17 @@
                                             @UserManager.GetUserName(User)
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                            <li>
+                                            @* <li>
                                                 <a asp-controller="Account" asp-action="Index"
                                                     asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">
                                                     <b>Личный кабинет</b>
                                                 </a>
-                                            </li>
-                                            <li><hr class="dropdown-divider"></li>
+                                            </li> *@
+                                            @* <li><hr class="dropdown-divider"></li>
                                             <li>
                                                 <a asp-controller="Order" asp-action="PurchaseHistory"
                                                     asp-route-id="@UserManager.GetUserId(User)" class="dropdown-item">Покупки</a>
-                                            </li>
+                                            </li> *@
                                             <li>
                                                 <a asp-controller="Account" asp-action="ChangePassword"
                                                     asp-route-name="@UserManager.GetUserName(User)" class="dropdown-item">Смена пароля</a>

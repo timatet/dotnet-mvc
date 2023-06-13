@@ -97,9 +97,7 @@ namespace dotnet_mvc.Controllers.Product
 
         [HttpGet]
         public IActionResult New() {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
@@ -116,9 +114,7 @@ namespace dotnet_mvc.Controllers.Product
             IFormFile upload,
             List<string> productCharacteristicList
         ) {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
@@ -174,9 +170,7 @@ namespace dotnet_mvc.Controllers.Product
             IFormFile upload,
             List<string> productCharacteristicList
         ) {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
@@ -224,9 +218,7 @@ namespace dotnet_mvc.Controllers.Product
         [HttpGet]
         public IActionResult Edit(int? id)
         {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 // string currentDisplayUrl = Microsoft.AspNetCore.Http.Extensions.UriHelper.GetDisplayUrl(Request);
                 return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
             }
@@ -259,9 +251,7 @@ namespace dotnet_mvc.Controllers.Product
         [HttpPost]
         public bool Delete()
         {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 return false;
             }
 

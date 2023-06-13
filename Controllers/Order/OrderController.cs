@@ -139,9 +139,7 @@ namespace dotnet_mvc.Controllers
         [HttpPost]
         public bool Remove()
         {
-            bool userIsSignedIn = _signInManager.IsSignedIn(User);
-            bool userIsAdmin = userIsSignedIn ? _userManager.GetUserAsync(User).Result.IsAdmin : false;
-            if (!userIsSignedIn || !userIsAdmin) { 
+            if (!_signInManager.IsSignedIn(User) || !User.IsInRole("Admin")) { 
                 return false;
             }
 

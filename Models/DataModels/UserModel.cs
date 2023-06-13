@@ -9,6 +9,5 @@ namespace dotnet_mvc.Models.DataModels
   {
       public string FullName { get; set; }
       public DateTime BirthdayDate { get; set; }
-      public bool IsAdmin { get; set; }
   }
 }
