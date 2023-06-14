@@ -9,9 +9,54 @@
       - Уведомление "Заказ сформирован" *@
 
 <h1>@ViewData["Title"]</h1>
+<span>Сохраните, чтобы не потерять!</span>
 
 <div>
-    Заказ сформирован: @Model.Id
+    <table class="table" style="margin-left: 50px; margin-right: 50px;">
+        <thead>
+            <tr>
+                <th scope="col" colspan="2"> </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Идентификатор заказа</td>
+                <td>@Model.Id</td>
+            </tr>
+            <tr>
+                <td>Имя</td>
+                <td>@Model.Name</td>
+            </tr>
+            <tr>
+                <td>Фамилия</td>
+                <td>@Model.LastName</td>
+            </tr>
+            <tr>
+                <td>Адрес доставки</td>
+                <td>@Model.Address</td>
+            </tr>
+            <tr>
+                <td>Телефон</td>
+                <td>@Model.Phone</td>
+            </tr>
+            <tr>
+                <td>Способ доставки</td>
+                <td>@ViewBag.Deliv</td>
+            </tr>
+            <tr>
+                <td>К оплате при получении</td>
+                <td>@Model.TotalPrice</td>
+            </tr>
+            <tr>
+                <td>QR для получения</td>
+                <td><img src='@Url.Content("~/orders/")order_@(Model.Id).svg' style="aspect-ratio: 1/1;" width="50px" alt="..."></td>
+            </tr>
+    </table>
 
-    <img src='@Url.Content("~/orders/")order_@(Model.Id).svg' style="aspect-ratio: 1/1;" alt="...">
+    <div class="flex-right">
+        <a asp-action="Index" asp-controller="Home" 
+            class="btn btn-secondary btn-lg" style="margin-right: 25px;">
+            Вернуться на главную
+        </a>
+    </div>
 </div>

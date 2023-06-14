@@ -76,15 +76,13 @@ namespace dotnet_mvc.Controllers
             var categoryEnumList = Enum
                 .GetValues(typeof(CategoryEnum))
                 .Cast<CategoryEnum>()
-                .Select(
-                    p => new KeyValuePair<string, string>(
-                        p.ToString(),
-                        p.GetType()
+                .ToDictionary(
+                    p => p.ToString(),
+                    p => p.GetType()
                         .GetMember(p.ToString())
                         .First()
                         .GetCustomAttribute<DisplayAttribute>()
                         ?.GetName()
-                    )
                 );
             ViewData["CategoriesList"] = new SelectList(categoryEnumList, "Key", "Value", 
                 categoryEnumList.FirstOrDefault(c => c.Key == filterCategoriesSelect).Key);

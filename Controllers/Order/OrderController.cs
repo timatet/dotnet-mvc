@@ -133,6 +133,19 @@ namespace dotnet_mvc.Controllers
                 fileStream.Write(Encoding.UTF8.GetBytes(svg));
             }
 
+            var delivs = Enum
+                .GetValues(typeof(DeliveryMethodEnum))
+                .Cast<DeliveryMethodEnum>()
+                .ToDictionary(
+                    p => p.ToString(),
+                    p => p.GetType()
+                        .GetMember(p.ToString())
+                        .First()
+                        .GetCustomAttribute<DisplayAttribute>()
+                        ?.GetName()
+                );
+            ViewData["Deliv"] = delivs[orderFormationModel.orderModel.DeliveryMethod.ToString()];
+
             return View(orderModel);
         }
 
