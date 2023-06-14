@@ -11,7 +11,8 @@ namespace dotnet_mvc.Models.Auxiliary
         DrizzleError,
         AccessError,
         IsAuthorized,
-        Error404
+        Error404,
+        PasswordReset
     }
 
     public static class NoticeTypeExtensions
@@ -32,6 +33,8 @@ namespace dotnet_mvc.Models.Auxiliary
                     return "isauth.gif";
                 case NoticeType.Error404:
                     return "warning.gif";
+                case NoticeType.PasswordReset:
+                    return "shield.gif";
                 default:
                     return "None";
             }

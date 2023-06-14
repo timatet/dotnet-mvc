@@ -165,6 +165,48 @@ namespace dotnet_mvc.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult ResetPassword() 
+        {
+            if (!_signInManager.IsSignedIn(User)) { 
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
+            ResetPasswordModel resetPasswordModel = new ResetPasswordModel();
+            return View(resetPasswordModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordModel resetPasswordModel) 
+        {
+            if (!_signInManager.IsSignedIn(User)) { 
+                return View("Notice", NoticeModel.GetAccessErrorNoticeModel());
+            }
+
+            var notice = new NoticeModel(
+                    NoticeType.DrizzleError, 
+                    "Ошибка!",
+                    "При попытке сменить пароль произошла ошибка. Проверьте введенные данные!\n"
+                );
+
+            if (resetPasswordModel.newPassword == resetPasswordModel.repeatNewPassword) {
+                var res = await _userManager.ChangePasswordAsync(_userManager.GetUserAsync(User).Result, resetPasswordModel.oldPassword, resetPasswordModel.newPassword);
+                if (res.Succeeded) {
+                    notice = new NoticeModel(
+                        NoticeType.PasswordReset, 
+                        "Пароль успешно сменен!",
+                        ""
+                    );
+                } else {
+                    foreach (var error in res.Errors) {
+                        notice.MessageDescription += error.Description + "\n";
+                    }
+                }
+            } 
+
+            return View("Notice", notice);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register(RegisterModel registerModel)
         {
