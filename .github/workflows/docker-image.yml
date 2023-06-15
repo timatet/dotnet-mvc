@@ -25,7 +25,7 @@ jobs:
       - 
         name: Set variables
         run: |
-          sed -n '/## Description/,/## Technology Stack/p' README.md | head -n -1 > DESCRIPTION
+          sed -n '/## Description/,/EOF/p' README.md | head -n -1 > DESCRIPTION
           VER=$(cat README.md | tr '\n' ' ' | awk '{ sub(/.*Version: \*\*/, ""); sub(/\*\*.*/, ""); print }')
           echo "RELEASE_VERSION=$VER" >> $GITHUB_ENV
       -
