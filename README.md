@@ -19,12 +19,16 @@ Version: **23.21.1**
 - Error/Info Pages
 
 ### Goals for the next version
-
-- Simplified product management catalog for administration
-- Creating/processing orders
+- Administrator's personal account to manage users and roles
 - Personal Account page
 
 ## Technology Stack
 - Net5.0
 - NPM
 - Bootstrap 5.2.3
+
+## Known Bugs
+- **Problem:** Can cause an error when trying to checkout if no item is selected. \
+  **Required solution:** add a processing that sends a notification about the impossibility of such an action
+  
+EOF
