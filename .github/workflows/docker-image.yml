@@ -40,6 +40,10 @@ jobs:
             ${{ secrets.DOCKERHUB_USERNAME }}/dotnet-mvc:latest
           build-args: |
             RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+            DB_SRVR=${{ secrets.DATABASE_SERVER }}
+            DB_NAME=${{ secrets.DATABASE_NAME }}
+            DB_USER=${{ secrets.DATABASE_USERNAME }}
+            DB_PSWD=${{ secrets.DATABASE_PASSWORD }}
       - 
         name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3

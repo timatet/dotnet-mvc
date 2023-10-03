@@ -39,13 +39,16 @@ namespace dotnet_mvc
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            Globals.Initialize();
+
             services.AddControllersWithViews();
 
             string ConnectionString = String.Format("Server={0}; Database={1}; User Id={2}; Password={3}; {4}",
-                _configuration["ConnectionSettings:Server"],
-                _configuration["ConnectionSettings:Database"],
-                _configuration["ConnectionSettings:User Id"],
-                _configuration["ConnectionSettings:Password"],
+                Globals.DATABASE_SERVER,
+                Globals.DATABASE_NAME,
+                Globals.DATABASE_USERNAME,
+                Globals.DATABASE_PASSWORD,
                 _configuration["ConnectionSettings:Options:Default"]
             );
 
